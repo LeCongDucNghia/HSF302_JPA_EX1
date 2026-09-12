@@ -22,5 +22,12 @@ public class Main {
         // save() return (EntityManager da dong), emp tro thanh DETACHED.
         System.out.println("Da tao: " + emp);
 
+        // ===== READ =====
+        Employee found = dao.findById(emp.getId());
+        // [Lifecycle] found la mot object MANAGED trong pham vi EntityManager cua findById(),
+        // nhung EntityManager cung da dong ngay sau khi return -> found cung la DETACHED
+        // ngay khi ra khoi method.
+        System.out.println("Doc lai: " + found);
+
     }
 }
