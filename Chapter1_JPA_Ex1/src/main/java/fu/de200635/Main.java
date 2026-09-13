@@ -37,5 +37,14 @@ public class Main {
 
         System.out.println("\n===== SALARY > 1 TY AND ACTIVE =====");
         dao.findBySalaryGreaterThanAndActive(new BigDecimal("1000000000")).forEach(System.out::println);
+
+        System.out.println("\n===== UPDATE =====");
+        found.setSalary(new BigDecimal("19000000"));
+        Employee updated = dao.update(found);
+        System.out.println("Sau update: " + updated);
+
+        // Doc lai de kiem chung
+        Employee reChecked = dao.findById(emp.getId());
+        System.out.println("Kiem tra lai sau update: " + reChecked);
     }
 }
