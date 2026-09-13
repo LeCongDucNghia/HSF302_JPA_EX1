@@ -37,5 +37,18 @@ public class Main {
         Employee afterDelete = dao.findById(emp.getId());
         System.out.println("Sau khi xoa, tim lai: " + afterDelete); // ky vong: null
 
+        // ===== Test ====
+        Employee dup1 = new Employee("User 1", "trung@fpt.edu.vn",
+                new BigDecimal("10000000"), Gender.FEMALE, LocalDate.now());
+        Employee dup2 = new Employee("User 2", "trung@fpt.edu.vn", // trung email
+                new BigDecimal("11000000"), Gender.MALE, LocalDate.now());
+        dao.save(dup1);
+        try {
+            dao.save(dup2); // ky vong: nem exception vi vi pham UNIQUE
+            System.out.println("LOI: khong thay exception nhu ky vong!");
+        } catch (RuntimeException ex) {
+            System.out.println("Da bat duoc loi trung email nhu ky vong: "
+                    + ex.getClass().getSimpleName());
+        }
     }
 }
