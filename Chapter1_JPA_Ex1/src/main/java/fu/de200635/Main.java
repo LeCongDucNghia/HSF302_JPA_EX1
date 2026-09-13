@@ -46,5 +46,11 @@ public class Main {
         // Doc lai de kiem chung
         Employee reChecked = dao.findById(emp.getId());
         System.out.println("Kiem tra lai sau update: " + reChecked);
+
+        System.out.println("\n===== DELETE =====");
+        dao.delete(emp.getId());
+        Employee afterDelete = dao.findById(emp.getId());
+        System.out.println("Sau khi xoa, tim lai: " + afterDelete); // ky vong: null
+
     }
 }
