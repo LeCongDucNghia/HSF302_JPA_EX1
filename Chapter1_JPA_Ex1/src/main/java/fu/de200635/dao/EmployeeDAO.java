@@ -4,6 +4,8 @@ import fu.de200635.pojo.Employee;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 public class EmployeeDAO {
@@ -36,6 +38,31 @@ public class EmployeeDAO {
         EntityManager em = emf.createEntityManager();
         try {
             return em.createQuery("SELECT e FROM Employee e", Employee.class).getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public Employee findByEmail(String email) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            List<Employee> result = em.createQuery(
+                            "SELECT e FROM Employee e WHERE e.email = :email", Employee.class)
+                    .setParameter("email", email)
+                    .getResultList();
+            return result.isEmpty() ? null : result.get(0);
+        } finally {
+            em.close();
+        }
+    }
+    public List<Employee> findBySalaryGreaterThanAndActive(BigDecimal minSalary) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery(
+                            "SELECT e FROM Employee e WHERE e.salary > :minSalary AND e.active = true",
+                            Employee.class)
+                    .setParameter("minSalary", minSalary)
+                    .getResultList();
         } finally {
             em.close();
         }
