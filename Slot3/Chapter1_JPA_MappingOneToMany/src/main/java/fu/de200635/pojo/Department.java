@@ -14,8 +14,10 @@ public class Department {
 
     @Column(unique = true, nullable = false)
     private String name;
-
     private String location;
+
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Employee> employees = new ArrayList<>();
 
     public Department() {
     }
