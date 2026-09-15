@@ -1,17 +1,33 @@
 package fu.de200635;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import fu.de200635.pojo.Department;
+import fu.de200635.pojo.Employee;
+import fu.de200635.pojo.Gender;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        Department dept = new Department("IT", "Ha Noi");
+
+        Employee emp = new Employee(
+                "test@company.com",
+                "Test",
+                Gender.OTHER,
+                new BigDecimal("1000"),
+                LocalDate.now()
+        );
+
+        dept.addEmployee(emp);
+
+        System.out.println(
+                dept.getEmployees().contains(emp)
+        );
+
+        System.out.println(
+                emp.getDepartment() == dept
+        );
     }
 }

@@ -14,9 +14,14 @@ public class Department {
 
     @Column(unique = true, nullable = false)
     private String name;
+
     private String location;
 
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "department",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<Employee> employees = new ArrayList<>();
 
     public Department() {
@@ -27,13 +32,22 @@ public class Department {
         this.location = location;
     }
 
-    // Getter & Setter
-    public Long getId() {
-        return id;
+    // ===== Helper Methods =====
+
+    public void addEmployee(Employee employee) {
+        employees.add(employee);
+        employee.setDepartment(this);
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void removeEmployee(Employee employee) {
+        employees.remove(employee);
+        employee.setDepartment(null);
+    }
+
+    // ===== Getter Setter =====
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -50,5 +64,22 @@ public class Department {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
+    }
+
+    @Override
+    public String toString() {
+        return "Department{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", location='" + location + '\'' +
+                '}';
     }
 }
