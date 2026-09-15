@@ -11,8 +11,11 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String fullName;
+
     private BigDecimal salary;
+
     private LocalDate hireDate;
 
     @Column(unique = true, nullable = false)
@@ -20,12 +23,21 @@ public class Employee {
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
     private boolean active;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
 
     public Employee() {
     }
 
-    public Employee(String email, String fullName, Gender gender, BigDecimal salary, LocalDate hireDate) {
+    public Employee(String email,
+                    String fullName,
+                    Gender gender,
+                    BigDecimal salary,
+                    LocalDate hireDate) {
         this.email = email;
         this.fullName = fullName;
         this.gender = gender;
@@ -34,7 +46,6 @@ public class Employee {
         this.active = true;
     }
 
-    // Getter & Setter
     public Long getId() {
         return id;
     }
@@ -89,5 +100,26 @@ public class Employee {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", fullName='" + fullName + '\'' +
+                ", salary=" + salary +
+                ", hireDate=" + hireDate +
+                ", email='" + email + '\'' +
+                ", gender=" + gender +
+                ", active=" + active +
+                '}';
     }
 }
