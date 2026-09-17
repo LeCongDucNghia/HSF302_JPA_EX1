@@ -5,40 +5,28 @@ import fu.de200635.pojo.Department;
 import fu.de200635.pojo.Employee;
 import fu.de200635.pojo.Gender;
 import fu.de200635.util.JPAUtil;
+import jakarta.persistence.EntityManager;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        DepartmentDAO departmentDAO = new DepartmentDAO();
-        // 1) Tạo Department + 3 Employee, add qua helper method (TODO 2.4)
-        Department its = new Department("Marketing", "Ha Noi");
+        EntityManager em = JPAUtil.getEmf().createEntityManager();
 
-        Employee e1 = new Employee("aa.nguyen@company.com", "Nguyen Van A", Gender.MALE,
-                new BigDecimal("15000000"), LocalDate.of(2022, 1, 10));
-        Employee e2 = new Employee("bb.tran@company.com", "Tran Thi B", Gender.FEMALE,
-                new BigDecimal("18000000"), LocalDate.of(2021, 6, 1));
-        Employee e3 = new Employee("cc.le@company.com", "Le Van C", Gender.OTHER,
-                new BigDecimal("12000000"), LocalDate.of(2023, 3, 15));
+        try {
+            List<Department> departments = em.createQuery("SELECT d FROM Department d", Department.class).getResultList();
 
-        its.addEmployee(e1);
-        its.addEmployee(e2);
-        its.addEmployee(e3);
+            for (Department d : departments) {
 
-        // 2) Chỉ persist(department) — cascade = ALL tự lo phần Employee (TODO 2.7)
-        departmentDAO.save(its);
-        System.out.println("Da luu Department, id = " + its.getId());
+                System.out.println("Department: " + d.getName());
 
-        // 3) Tim lai kem employees bang JOIN FETCH (TODO 2.6) — khong bi
-        //    LazyInitializationException du EntityManager cua lan tim nay da dong,
-        //    vi employees da duoc load ngay trong cung 1 query.
-        Department found = departmentDAO.findByIdWithEmployees(its.getId());
-        System.out.println("Phong ban: " + found.getName());
-        for (Employee e : found.getEmployees()) {
-            System.out.println("  - " + e);
+                // kích hoạt LAZY LOAD
+                System.out.println("So nhan vien: " + d.getEmployees().size());
+            }
+        } finally {
+            em.close();
         }
-
-        JPAUtil.close();
     }
 }
