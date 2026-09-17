@@ -31,10 +31,7 @@ public class EmployeeDAO {
         EntityManager em = JPAUtil.getEmf().createEntityManager();
 
         try {
-            return em.createQuery(
-                    "SELECT e FROM Employee e",
-                    Employee.class
-            ).getResultList();
+            return em.createQuery("SELECT e FROM Employee e", Employee.class).getResultList();
         } finally {
             em.close();
         }
@@ -56,9 +53,7 @@ public class EmployeeDAO {
 
         try {
             tx.begin();
-
             employee = em.merge(employee);
-
             tx.commit();
             return employee;
         } catch (Exception e) {
@@ -77,9 +72,7 @@ public class EmployeeDAO {
 
         try {
             tx.begin();
-
             Employee employee = em.find(Employee.class, id);
-
             if (employee != null) {
                 em.remove(employee);
             }

@@ -31,10 +31,7 @@ public class DepartmentDAO {
         EntityManager em = JPAUtil.getEmf().createEntityManager();
 
         try {
-            return em.createQuery(
-                    "SELECT d FROM Department d",
-                    Department.class
-            ).getResultList();
+            return em.createQuery("SELECT d FROM Department d", Department.class).getResultList();
         } finally {
             em.close();
         }
@@ -90,6 +87,20 @@ public class DepartmentDAO {
                 tx.rollback();
             }
             throw e;
+        } finally {
+            em.close();
+        }
+    }
+
+    public Department findByIdWithEmployees(Long id) {
+        EntityManager em = JPAUtil.getEmf().createEntityManager();
+
+        try {
+            return em.createQuery("SELECT d FROM Department d " +
+                                    "JOIN FETCH d.employees " +
+                                    "WHERE d.id = :id",
+                    Department.class).setParameter("id", id).getSingleResult();
+
         } finally {
             em.close();
         }
