@@ -18,9 +18,7 @@ public class Department {
     private String location;
 
     @OneToMany(
-            mappedBy = "department",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+            mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true
     )
     private List<Employee> employees = new ArrayList<>();
 
@@ -76,10 +74,6 @@ public class Department {
 
     @Override
     public String toString() {
-        return "Department{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", location='" + location + '\'' +
-                '}';
+        return "Department{" + "id=" + id + ", name='" + name + '\'' + ", location='" + location + '\'' + '}';
     }
 }

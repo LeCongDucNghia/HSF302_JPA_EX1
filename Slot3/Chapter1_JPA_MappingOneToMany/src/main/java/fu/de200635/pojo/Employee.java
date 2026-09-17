@@ -33,11 +33,7 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String email,
-                    String fullName,
-                    Gender gender,
-                    BigDecimal salary,
-                    LocalDate hireDate) {
+    public Employee(String email, String fullName, Gender gender, BigDecimal salary, LocalDate hireDate) {
         this.email = email;
         this.fullName = fullName;
         this.gender = gender;
@@ -112,14 +108,7 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee{" +
-                "id=" + id +
-                ", fullName='" + fullName + '\'' +
-                ", salary=" + salary +
-                ", hireDate=" + hireDate +
-                ", email='" + email + '\'' +
-                ", gender=" + gender +
-                ", active=" + active +
-                '}';
+        return "Employee{" + "id=" + id + ", fullName='" + fullName + '\'' + ", salary=" + salary + ", hireDate=" +
+                hireDate + ", email='" + email + '\'' + ", gender=" + gender + ", active=" + active + '}';
     }
 }
