@@ -13,20 +13,16 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        EntityManager em = JPAUtil.getEmf().createEntityManager();
+        DepartmentDAO departmentDAO = new DepartmentDAO();
 
-        try {
-            List<Department> departments = em.createQuery("SELECT d FROM Department d", Department.class).getResultList();
+            List<Department> departments = departmentDAO.findAllWithEmployees();
 
             for (Department d : departments) {
-
                 System.out.println("Department: " + d.getName());
 
                 // kích hoạt LAZY LOAD
                 System.out.println("So nhan vien: " + d.getEmployees().size());
             }
-        } finally {
-            em.close();
-        }
+            JPAUtil.close();
     }
 }
