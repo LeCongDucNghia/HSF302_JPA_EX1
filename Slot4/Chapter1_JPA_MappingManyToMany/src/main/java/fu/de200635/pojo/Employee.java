@@ -36,6 +36,14 @@ public class Employee {
     public Employee() {
     }
 
+    public void assignToProject(Project p) {
+        if (p == null) {
+            return;
+        }
+        this.projects.add(p);
+        p.getEmployees().add(this);
+    }
+
     public Long getId() {
         return id;
     }
