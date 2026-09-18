@@ -7,7 +7,7 @@
     <persistence-unit name="hsf302FU" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>fu.se123456.pojo.Department</class>
+        <class>fu.se123456.pojo.Project</class>
         <class>fu.se123456.pojo.Employee</class>
 
         <properties>
@@ -23,7 +23,6 @@ trustServerCertificate=true"/>
                       value="org.hibernate.dialect.SQLServerDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
 
-            <!-- Bật để đếm số câu SQL khi làm TODO 2.8 / 2.9 -->
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
         </properties>
