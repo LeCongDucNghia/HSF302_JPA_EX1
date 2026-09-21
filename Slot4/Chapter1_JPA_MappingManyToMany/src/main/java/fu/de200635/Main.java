@@ -21,6 +21,11 @@ public class Main {
         System.out.println("Projects of " + emp1.getFullName());
         emp1.getProjects().forEach(p -> System.out.println(" - " + p.getProjectName()));
         em.close();
+
+        // TODO 5.10: nhân viên active tham gia > 1 project (TRƯỚC khi gỡ)
+        System.out.println("\n[5.10] BEFORE UNASSIGN:");
+        dao.findEmployeesInMultipleProjects();
+
 // Gỡ NV1 khỏi Project B
         dao.unassignEmployeeFromProject(1L, 2L);
 // Kiểm tra lại
@@ -30,5 +35,9 @@ public class Main {
         System.out.println("Projects of " + empAfter.getFullName());
         empAfter.getProjects().forEach(p -> System.out.println(" - " + p.getProjectName()));
         em2.close();
+
+        // TODO 5.10: chạy lại sau khi gỡ -> NV1 chỉ còn 1 project nên không còn trong kết quả
+        System.out.println("\n[5.10] AFTER UNASSIGN:");
+        dao.findEmployeesInMultipleProjects();
     }
 }

@@ -6,6 +6,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import fu.de200635.util.JPAUtil;
 
+import java.util.List;
+
 public class EmployeeDAO {
     public void assignEmployeeToProject(Long employeeId, Long projectId) {
         EntityManager em = JPAUtil.getEmf().createEntityManager();
@@ -59,6 +61,31 @@ public class EmployeeDAO {
             }
             throw e;
         } finally {
+            em.close();
+        }
+    }
+
+    public void findEmployeesInMultipleProjects() {
+        EntityManager em = JPAUtil.getEmf().createEntityManager();
+        try {
+            String jpql = """
+                SELECT e
+                FROM Employee e
+                WHERE e.active = true
+                AND SIZE(e.projects) > 1
+                """;
+
+            List<Employee> employees = em.createQuery(jpql, Employee.class).getResultList();
+
+            System.out.println("\n===== EMPLOYEES IN MULTIPLE PROJECTS =====");
+
+            if (employees.isEmpty()) {
+                System.out.println("(No employee is involved in more than one project.)");
+            } else {
+                employees.forEach(e -> System.out.println(e.getId() + " - " + e.getFullName()));
+            }
+        }
+        finally {
             em.close();
         }
     }
