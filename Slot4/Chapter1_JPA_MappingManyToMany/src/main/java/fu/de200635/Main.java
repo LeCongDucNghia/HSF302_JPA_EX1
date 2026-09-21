@@ -23,7 +23,7 @@ public class Main {
         em.close();
 
         // TODO 5.10: nhân viên active tham gia > 1 project (TRƯỚC khi gỡ)
-        System.out.println("\n[5.10] BEFORE UNASSIGN:");
+        System.out.println("\n[5.10] TRƯỚC khi gỡ:");
         dao.findEmployeesInMultipleProjects();
 
 // Gỡ NV1 khỏi Project B
@@ -37,7 +37,17 @@ public class Main {
         em2.close();
 
         // TODO 5.10: chạy lại sau khi gỡ -> NV1 chỉ còn 1 project nên không còn trong kết quả
-        System.out.println("\n[5.10] AFTER UNASSIGN:");
+        System.out.println("\n[5.10] SAU khi gỡ:");
         dao.findEmployeesInMultipleProjects();
+
+        // TODO 5.11: cho NV3 nghỉ việc -> active = false nhưng vẫn còn trong employee_project
+        dao.deactivateEmployee(3L);
+        EntityManager em3 = JPAUtil.getEmf().createEntityManager();
+        Employee emp3 = em3.find(Employee.class, 3L);
+        System.out.println("\n===== AFTER DEACTIVATE =====");
+        System.out.println(emp3.getFullName() + " | active = " + emp3.isActive());
+        System.out.println("Projects still kept:");
+        emp3.getProjects().forEach(p -> System.out.println(" - " + p.getProjectName()));
+        em3.close();
     }
 }
