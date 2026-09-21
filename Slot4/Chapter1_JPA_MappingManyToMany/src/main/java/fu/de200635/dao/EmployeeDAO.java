@@ -10,7 +10,6 @@ public class EmployeeDAO {
     public void assignEmployeeToProject(Long employeeId, Long projectId) {
         EntityManager em = JPAUtil.getEmf().createEntityManager();
         EntityTransaction tx = em.getTransaction();
-
         try {
             tx.begin();
             Employee employee = em.find(Employee.class, employeeId);
@@ -28,6 +27,32 @@ public class EmployeeDAO {
             employee.assignToProject(project);
             tx.commit();
 
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+
+    public void unassignEmployeeFromProject(Long employeeId, Long projectId) {
+        EntityManager em = JPAUtil.getEmf().createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+
+            Employee employee = em.find(Employee.class, employeeId);
+            Project project = em.find(Project.class, projectId);
+
+            if (employee == null || project == null) {
+                throw new RuntimeException("Employee or Project not found");
+            }
+
+            employee.unassignFromProject(project);
+
+            tx.commit();
         } catch (Exception e) {
             if (tx.isActive()) {
                 tx.rollback();

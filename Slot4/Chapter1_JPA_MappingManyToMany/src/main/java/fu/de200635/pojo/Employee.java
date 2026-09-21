@@ -44,6 +44,15 @@ public class Employee {
         p.getEmployees().add(this);
     }
 
+    public void unassignFromProject(Project p) {
+        if (p == null) {
+            return;
+        }
+
+        this.projects.remove(p);
+        p.getEmployees().remove(this);
+    }
+
     public Long getId() {
         return id;
     }
