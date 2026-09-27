@@ -42,6 +42,10 @@ public class Student {
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
 
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
     @Override
     public String toString() {
         return String.format("%s | %-15s | %-20s | %.1f | %s",
