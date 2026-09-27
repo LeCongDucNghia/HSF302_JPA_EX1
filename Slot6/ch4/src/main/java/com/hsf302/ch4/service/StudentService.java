@@ -1,6 +1,10 @@
 package com.hsf302.ch4.service;
 
-public interface StudentService {
-    // Các method được bổ sung dần từ TODO 6
-}
+import com.hsf302.ch4.pojo.Student;
 
+import java.util.Optional;
+
+public interface StudentService {
+    long count();
+    Optional<Student> findById(Long id);
+}
