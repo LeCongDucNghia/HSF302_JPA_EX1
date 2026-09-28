@@ -70,4 +70,8 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
     @Query("UPDATE Student s SET s.active = false WHERE s.gpa < :threshold AND s.active = true")
     int deactivateLowGpa(@Param("threshold") double threshold);
 
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE Student s SET s.department = :to WHERE s.department = :from")
+    int transferStudents(@Param("from") Department from, @Param("to") Department to);
+
 }
