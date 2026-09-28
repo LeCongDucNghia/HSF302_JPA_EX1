@@ -3,9 +3,14 @@ package com.hsf302.ch4.service;
 import com.hsf302.ch4.pojo.Student;
 import com.hsf302.ch4.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,6 +39,21 @@ public class StudentServiceImpl implements StudentService {
         }
         Pageable pageable = PageRequest.of(pageIndex, size, Sort.by(sortField).ascending());
         return studentRepository.findAll(pageable);
+    }
+
+    @Override
+    public Optional<Student> findByStudentCode(String studentCode) {
+        return studentRepository.findByStudentCode(studentCode);
+    }
+
+    @Override
+    public boolean isEmailExisted(String email) {
+        return studentRepository.existsByEmail(email);
+    }
+
+    @Override
+    public long countActive() {
+        return studentRepository.countByActiveTrue();
     }
 
 }
