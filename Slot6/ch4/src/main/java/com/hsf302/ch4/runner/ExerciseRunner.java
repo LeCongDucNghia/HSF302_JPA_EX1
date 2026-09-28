@@ -88,4 +88,11 @@ public class ExerciseRunner implements CommandLineRunner {
         System.out.println("countActive -> " + studentService.countActive());
     }
 
+    private void todo9() {
+        title("TODO 9: Containing / EndingWith / IsNull");
+        printList("fullName contains 'nguyen'", studentService.searchByName("nguyen"));
+        printList("email domain 'gmail.com'", studentService.findByEmailDomain("gmail.com"));
+        printList("email is null", studentService.findWithoutEmail());
+    }
+
 }
