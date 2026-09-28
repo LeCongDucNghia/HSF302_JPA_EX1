@@ -95,4 +95,11 @@ public class ExerciseRunner implements CommandLineRunner {
         printList("email is null", studentService.findWithoutEmail());
     }
 
+    private void todo10() {
+        title("TODO 10: Between / And / True / After");
+        printList("GPA in [3.0, 3.6] desc", studentService.findByGpaRange(3.0, 3.6));
+        printList("MALE & active", studentService.findActiveByGender(Gender.MALE));
+        printList("dob after 2005-01-01", studentService.findBornAfter(LocalDate.of(2005, 1, 1)));
+    }
+
 }
