@@ -95,4 +95,18 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findByDobAfter(date);
     }
 
+    @Override
+    public List<Student> findByDepartment(String deptCode) {
+        return studentRepository.findByDepartment_CodeOrderByFullNameAsc(deptCode);
+    }
+
+    @Override
+    public long countByDepartment(String deptCode) {
+        return studentRepository.countByDepartment_Code(deptCode);
+    }
+
+    @Override
+    public List<Student> findTop3ByGpa() {
+        return studentRepository.findTop3ByOrderByGpaDesc();
+    }
 }
