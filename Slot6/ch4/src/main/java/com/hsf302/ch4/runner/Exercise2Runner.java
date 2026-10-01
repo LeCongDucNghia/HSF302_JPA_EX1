@@ -98,4 +98,12 @@ public class Exercise2Runner implements CommandLineRunner {
         printList("(b1) Courses of AI students - no Distinct", courseService.findCoursesOfDepartment("AI", false));
         printList("(b2) Courses of AI students - Distinct", courseService.findCoursesOfDepartment("AI", true));
     }
+
+    private void todo11() {
+        title("TODO 11: IsEmpty, existsBy...And...");
+        printList("(a) Students without courses", enrollmentService.findStudentsWithoutCourses());
+        printList("(b) Courses without students", courseService.findCoursesWithoutStudents());
+        System.out.println("(c) SE001 enrolled AIL303? " + enrollmentService.isEnrolled("SE001", "AIL303"));
+        System.out.println("    SE002 enrolled AIL303? " + enrollmentService.isEnrolled("SE002", "AIL303"));
+    }
 }

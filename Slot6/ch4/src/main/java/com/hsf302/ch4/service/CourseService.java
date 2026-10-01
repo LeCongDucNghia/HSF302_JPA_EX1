@@ -1,6 +1,7 @@
 package com.hsf302.ch4.service;
 
 import com.hsf302.ch4.pojo.Course;
+import com.hsf302.ch4.pojo.Student;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,4 +17,6 @@ public interface CourseService {
 
     List<Course> findCoursesOfStudent(String studentCode);
     List<Course> findCoursesOfDepartment(String deptCode, boolean distinct);
+
+    List<Course> findCoursesWithoutStudents();
 }
