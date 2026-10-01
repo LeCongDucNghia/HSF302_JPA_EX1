@@ -14,4 +14,6 @@ public interface CourseService {
     List<Course> findBySemester(String semester);
     long countBySemester(String semester);
 
+    List<Course> findCoursesOfStudent(String studentCode);
+    List<Course> findCoursesOfDepartment(String deptCode, boolean distinct);
 }
