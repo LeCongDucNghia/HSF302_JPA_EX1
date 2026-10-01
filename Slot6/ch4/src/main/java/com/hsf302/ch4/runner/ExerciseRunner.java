@@ -8,6 +8,7 @@ import com.hsf302.ch4.service.DepartmentService;
 import com.hsf302.ch4.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Component
 @Order(2)
+@Profile("ex1")
 @RequiredArgsConstructor
 public class ExerciseRunner implements CommandLineRunner {
     // Runner CHỈ phụ thuộc vào Service (interface), KHÔNG inject Repository
@@ -202,5 +204,11 @@ public class ExerciseRunner implements CommandLineRunner {
         System.out.println("Deleted: " + deleted);
         System.out.println("Students left: " + studentService.count());
         printList("Final statistics", departmentService.getStatistics());
+    }
+
+    private void todo24() {
+        title("TODO 24 (Bonus): Specification");
+        printList("search(null, AI, 3.0, true)", studentService.search(null, "AI", 3.0, true));
+        printList("search(van, null, null, null)", studentService.search("van", null, null, null));
     }
 }

@@ -5,6 +5,7 @@ import com.hsf302.ch4.pojo.Department;
 import com.hsf302.ch4.repository.DepartmentRepository;
 import com.hsf302.ch4.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,5 +69,4 @@ public class DepartmentServiceImpl implements DepartmentService {
     public List<Department> findAll() {
         return departmentRepository.findAll(Sort.by("id"));
     }
-
 }
