@@ -149,6 +149,14 @@ public class Student {
         this.id = id;
     }
 
+    public Set<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
+    }
+
     @Override
     public String toString() {
         return String.format("%s | %-15s | %-20s | %.1f | %s",
