@@ -106,4 +106,9 @@ public class Exercise2Runner implements CommandLineRunner {
         System.out.println("(c) SE001 enrolled AIL303? " + enrollmentService.isEnrolled("SE001", "AIL303"));
         System.out.println("    SE002 enrolled AIL303? " + enrollmentService.isEnrolled("SE002", "AIL303"));
     }
+
+    private void todo12() {
+        title("TODO 12: JPQL JOIN s.courses");
+        printList("HSF302 & GPA >= 3.5", enrollmentService.findGoodStudentsInCourse("HSF302", 3.5));
+    }
 }
