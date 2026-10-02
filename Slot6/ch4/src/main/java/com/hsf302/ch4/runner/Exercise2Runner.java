@@ -32,11 +32,13 @@ public class Exercise2Runner implements CommandLineRunner {
         partB();
         partC();
         partD();
+        bonus();
     }
 
     private void partB() { todo6(); todo7(); }
     private void partC() { todo8(); todo9(); todo10(); todo11(); }
     private void partD() { todo12(); todo13(); todo14(); todo15(); todo16(); todo17(); todo18(); todo19(); }
+    private void bonus() {todo25(); }
 
     // ===== helpers =====
     private void title(String t) {
@@ -188,5 +190,12 @@ public class Exercise2Runner implements CommandLineRunner {
         } while (page.hasNext());
         System.out.println("totalElements = " + page.getTotalElements()
                 + ", totalPages = " + page.getTotalPages());
+    }
+
+    private void todo25() {
+        title("TODO 25 (Bonus): Specification search");
+        printList("search(null, SU26, null, null)", enrollmentService.search(null, "SU26", null, null));
+        printList("search(HSF302, null, SE, 3.5)", enrollmentService.search("HSF302", null, "SE", 3.5));
+        printList("search(null, FA26, AI, null)", enrollmentService.search(null, "FA26", "AI", null));
     }
 }
