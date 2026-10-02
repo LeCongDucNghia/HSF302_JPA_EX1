@@ -35,7 +35,7 @@ public class Exercise2Runner implements CommandLineRunner {
 
     private void partB() { todo6(); todo7(); }
     private void partC() { todo8(); todo9(); todo10(); todo11(); }
-    private void partD() { todo12(); todo13(); todo14(); todo15(); todo16(); todo17();}
+    private void partD() { todo12(); todo13(); todo14(); todo15(); todo16(); todo17(); todo18();}
 
     // ===== helpers =====
     private void title(String t) {
@@ -169,5 +169,10 @@ public class Exercise2Runner implements CommandLineRunner {
                 "   %s | %-35s | %d student(s)%n", r.getCode(), r.getName(), r.getEnrolled()));
     }
 
-
+    private void todo18() {
+        title("TODO 18: interface projection - enrollments of department AI");
+        enrollmentService.getEnrollmentsOfDepartment("AI").forEach(v -> System.out.printf(
+                "   %s | %-14s | %s | %-35s | %d%n",
+                v.getStudentCode(), v.getFullName(), v.getCourseCode(), v.getCourseName(), v.getCredits()));
+    }
 }
