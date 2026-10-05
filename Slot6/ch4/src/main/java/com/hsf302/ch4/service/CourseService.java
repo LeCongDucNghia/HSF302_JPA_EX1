@@ -29,4 +29,7 @@ public interface CourseService {
     Course getWithStudents(String code);
 
     List<CourseEnrollmentCount> findTopEnrolled(int n);
+
+    void deleteCourseDirectly(String code);   // cách SAI — để quan sát lỗi
+    int deleteCourse(String code);            // cách ĐÚNG
 }
