@@ -222,4 +222,15 @@ public class Exercise2Runner implements CommandLineRunner {
         System.out.println("AI002 still exists? " + studentService.findByStudentCode("AI002").isPresent());
         System.out.println("Total courses: " + courseService.count());
     }
+
+    private void todo22() {
+        title("TODO 22: switch course in one transaction");
+        attempt("switch SE001 SWP391 -> MKT101",
+                () -> enrollmentService.switchCourse("SE001", "SWP391", "MKT101"));
+        printList("Courses of SE001", enrollmentService.getCoursesOfStudent("SE001"));
+
+        attempt("switch SE001 PRJ301 -> AIL303",
+                () -> enrollmentService.switchCourse("SE001", "PRJ301", "AIL303"));
+        printList("Courses of SE001 (after rollback)", enrollmentService.getCoursesOfStudent("SE001"));
+    }
 }
