@@ -38,6 +38,14 @@ public class Student {
     @Column(name = "gpa", nullable = false)
     private Double gpa;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "major_id", nullable = false)
+    private Major major;
+
+    // Getter & Setter cho Major
+    public Major getMajor() { return major; }
+    public void setMajor(Major major) { this.major = major; }
+
     // ========== Constructors ==========
 
     /** JPA bắt buộc có constructor không tham số */
