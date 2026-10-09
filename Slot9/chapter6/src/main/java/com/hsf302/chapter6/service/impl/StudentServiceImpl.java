@@ -3,6 +3,8 @@ package com.hsf302.chapter6.service.impl;
 import com.hsf302.chapter6.entity.Student;
 import com.hsf302.chapter6.repository.StudentRepository;
 import com.hsf302.chapter6.service.StudentService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,5 +87,10 @@ public class StudentServiceImpl implements StudentService {
         String trimmed = keyword.trim();
         return studentRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
                 trimmed, trimmed, Sort.by(Sort.Direction.ASC, "id"));
+    }
+
+    @Override
+    public Page<Student> findAllPaged(Pageable pageable) {
+        return studentRepository.findAll(pageable);
     }
 }

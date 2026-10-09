@@ -1,9 +1,13 @@
 package com.hsf302.chapter6.controller;
 
+import com.hsf302.chapter6.dto.StudentForm;
 import com.hsf302.chapter6.entity.Student;
 import com.hsf302.chapter6.service.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -156,5 +160,58 @@ public class StudentController {
         model.addAttribute("students", students);
         model.addAttribute("keyword", keyword); // Giữ lại keyword trên ô input
         return "students/list";
+    }
+
+    @GetMapping
+    public String list(@RequestParam(value = "page", defaultValue = "0") int page,
+                       @RequestParam(value = "size", defaultValue = "5") int size,
+                       Model model) {
+        Page<Student> studentPage = studentService.findAllPaged(PageRequest.of(page, size));
+        model.addAttribute("studentPage", studentPage);
+        model.addAttribute("students", studentPage.getContent());
+        return "students/list";
+    }
+
+    @GetMapping
+    public String list(@RequestParam(value = "sortField", defaultValue = "id") String sortField,
+                       @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
+                       Model model) {
+
+        Sort sort = sortDir.equalsIgnoreCase("asc") ?
+                Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+
+        List<Student> students = studentRepository.findAll(sort);
+
+        model.addAttribute("students", students);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+
+        return "students/list";
+    }
+
+    @GetMapping("/create")
+    public String showCreateForm(Model model) {
+        model.addAttribute("student", new StudentForm());
+        return formView(model, false);
+    }
+
+    @PostMapping("/create")
+    public String create(@Valid @ModelAttribute("student") StudentForm studentForm,
+                         BindingResult bindingResult, Model model, RedirectAttributes ra) {
+        if (!bindingResult.hasFieldErrors("email") && studentService.isEmailTaken(studentForm.getEmail(), null)) {
+            bindingResult.rejectValue("email", "duplicate", "Email đã tồn tại");
+        }
+        if (bindingResult.hasErrors()) {
+            return formView(model, false);
+        }
+
+        // Map DTO sang Entity
+        Student student = new Student(studentForm.getName(), studentForm.getEmail(),
+                studentForm.getAge(), studentForm.getMajor(), studentForm.getGpa());
+        studentService.create(student);
+
+        ra.addFlashAttribute("successMsg", "Thêm sinh viên thành công!");
+        return "redirect:/students";
     }
 }

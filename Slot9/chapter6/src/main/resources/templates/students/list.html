@@ -27,6 +27,35 @@
                 </div>
             </form>
 
+            <nav th:if="${studentPage.totalPages > 1}" class="mt-3">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${studentPage.first} ? 'disabled'">
+                        <a class="page-link" th:href="@{/students(page=${studentPage.number - 1})}">Trước</a>
+                    </li>
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, studentPage.totalPages - 1)}"
+                        th:classappend="${i == studentPage.number} ? 'active'">
+                        <a class="page-link" th:href="@{/students(page=${i})}" th:text="${i + 1}">1</a>
+                    </li>
+                    <li class="page-item" th:classappend="${studentPage.last} ? 'disabled'">
+                        <a class="page-link" th:href="@{/students(page=${studentPage.number + 1})}">Sau</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <th>
+                <a th:href="@{/students(sortField='name', sortDir=${sortField == 'name' ? reverseSortDir : 'asc'})}" class="text-white text-decoration-none">
+                    Họ tên
+                    <i th:if="${sortField == 'name'}" th:class="${sortDir == 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'}"></i>
+                </a>
+            </th>
+            <th>
+                <a th:href="@{/students(sortField='gpa', sortDir=${sortField == 'gpa' ? reverseSortDir : 'asc'})}" class="text-white text-decoration-none">
+                    GPA
+                    <i th:if="${sortField == 'gpa'}" th:class="${sortDir == 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'}"></i>
+                </a>
+            </th>
+
             <!-- Trường hợp rỗng -->
             <div th:if="${#lists.isEmpty(students)}" class="text-center p-5 text-muted">
                 <i class="bi bi-inbox display-4"></i>
