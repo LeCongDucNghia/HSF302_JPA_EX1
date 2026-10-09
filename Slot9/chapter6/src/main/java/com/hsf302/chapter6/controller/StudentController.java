@@ -149,4 +149,12 @@ public class StudentController {
         model.addAttribute("pageTitle", isEdit ? "Cập nhật sinh viên" : "Thêm sinh viên mới");
         return FORM_VIEW;
     }
+
+    @GetMapping
+    public String list(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+        List<Student> students = studentService.search(keyword);
+        model.addAttribute("students", students);
+        model.addAttribute("keyword", keyword); // Giữ lại keyword trên ô input
+        return "students/list";
+    }
 }

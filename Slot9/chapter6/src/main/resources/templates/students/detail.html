@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org"
-      th:replace="\~{fragments/layout :: layout(\~{::title}, \~{::section})}">
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
 <head>
     <title>Chi tiết sinh viên</title>
 </head>
@@ -56,7 +56,7 @@
                     <a th:href="@{/students/{id}/edit(id=${student.id})}" class="btn btn-warning">
                         <i class="bi bi-pencil me-1"></i>Sửa
                     </a>
-                    <!-- Sửa lỗi bản gốc: dùng data-name thay cho inline /\*\[\[...]]\*/ trong thuộc tính -->
+                    <!-- Sửa lỗi bản gốc: dùng data-name thay cho inline /*[[...]]*/ trong thuộc tính -->
                     <form th:action="@{/students/{id}/delete(id=${student.id})}"
                           method="post"
                           th:data-name="${student.name}"

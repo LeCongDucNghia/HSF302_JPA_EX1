@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org"
-      th:replace="\~{fragments/layout :: layout(\~{::title}, \~{::section})}">
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
 <head>
     <title>Danh sách sinh viên</title>
 </head>
@@ -16,6 +16,16 @@
 
     <div class="card shadow-sm">
         <div class="card-body p-0">
+
+            <form th:action="@{/students}" method="get" class="row g-2 mb-3">
+                <div class="col-auto">
+                    <input type="text" name="keyword" th:value="${keyword}" class="form-control" placeholder="Tìm theo tên hoặc email...">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-outline-primary"><i class="bi bi-search"></i> Tìm kiếm</button>
+                    <a th:if="${keyword != null and !keyword.isBlank()}" th:href="@{/students}" class="btn btn-outline-secondary">Xóa bộ lọc</a>
+                </div>
+            </form>
 
             <!-- Trường hợp rỗng -->
             <div th:if="${#lists.isEmpty(students)}" class="text-center p-5 text-muted">
