@@ -20,13 +20,13 @@ public class SanPhamController {
     // GET – hiển thị form rỗng
     @GetMapping("/them")
     public String showForm(Model model) {
-        model.addAttribute("sanpham", new SanPham());     // tên "sanPham" = th:object
+        model.addAttribute("sanPham", new SanPham());     // tên "sanPham" = th:object
         return "sanpham/form";
     }
 
     // POST – nhận dữ liệu, lưu, rồi REDIRECT
     @PostMapping("/them")
-    public String xuLyForm(@ModelAttribute("sanpham") SanPham sanPham, RedirectAttributes ra) {
+    public String xuLyForm(@ModelAttribute("sanPham") SanPham sanPham, RedirectAttributes ra) {
         danhSach.add(sanPham);
         ra.addFlashAttribute("thongBao", "Thêm sản phẩm thành công!");   // sống qua 1 lần redirect
         return "redirect:/sanpham/ket-qua";
