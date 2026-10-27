@@ -14,28 +14,41 @@
         <a th:href="@{/students/new}" class="btn btn-primary">+ Thêm sinh viên</a>
     </div>
 
-    <!-- Form tìm kiếm: giữ lại sort và dir khi submit -->
+    <!-- [CÂU 2]: Form tìm kiếm có thêm dropdown chọn ngành -->
     <form th:action="@{/students}" method="get" class="row g-2 mb-3">
-        <div class="col-md-6">
+        <div class="col-md-5">
             <input type="text" name="keyword" class="form-control"
                    placeholder="Tìm theo mã SV hoặc họ tên..."
                    th:value="${keyword}">
         </div>
+
+        <!-- Dropdown chọn ngành (Mục 2) -->
+        <div class="col-md-3">
+            <select name="major" class="form-select">
+                <option value="">-- Tất cả ngành --</option>
+                <option th:each="m : ${majors}"
+                        th:value="${m.key}"
+                        th:selected="${m.key == param.major}"
+                        th:text="${m.value}"></option>
+            </select>
+        </div>
+
+        <!-- Giữ lại thông tin sắp xếp -->
         <input type="hidden" name="sort" th:value="${sort}">
         <input type="hidden" name="dir" th:value="${dir}">
 
         <div class="col-auto">
             <button type="submit" class="btn btn-outline-primary">Tìm kiếm</button>
         </div>
-        <div class="col-auto" th:unless="${#strings.isEmpty(keyword)}">
+        <div class="col-auto" th:if="${not #strings.isEmpty(keyword) or not #strings.isEmpty(param.major)}">
             <a th:href="@{/students}" class="btn btn-outline-secondary">Xóa lọc</a>
         </div>
     </form>
 
     <!-- Thông báo kết quả tìm kiếm -->
-    <p class="text-muted" th:unless="${#strings.isEmpty(keyword)}"
-       th:text="|Tìm thấy ${totalStudents} sinh viên cho từ khóa: ${keyword}|">
-        Tìm thấy 1 sinh viên cho từ khóa: abc
+    <p class="text-muted" th:if="${not #strings.isEmpty(keyword) or not #strings.isEmpty(param.major)}"
+       th:text="|Tìm thấy ${totalStudents} sinh viên phù hợp.|">
+        Tìm thấy 1 sinh viên phù hợp.
     </p>
 
     <!-- 3 thẻ thống kê -->
@@ -71,19 +84,18 @@
             <tr>
                 <th>#</th>
 
-                <!-- [CÂU 1]: Cột Mã SV có thể click để sắp xếp -->
+                <!-- Click sắp xếp giữ lại cả keyword và major đang lọc -->
                 <th>
                     <a class="text-white text-decoration-none"
-                       th:href="@{/students(keyword=${keyword}, sort='studentCode', dir=${param.sort == 'studentCode' and param.dir == 'asc' ? 'desc' : 'asc'})}">
+                       th:href="@{/students(keyword=${keyword}, major=${major}, sort='studentCode', dir=${param.sort == 'studentCode' and param.dir == 'asc' ? 'desc' : 'asc'})}">
                         Mã SV
                         <span th:if="${param.sort == 'studentCode'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
 
-                <!-- [CÂU 1]: Cột Họ tên -->
                 <th>
                     <a class="text-white text-decoration-none"
-                       th:href="@{/students(keyword=${keyword}, sort='fullName', dir=${param.sort == 'fullName' and param.dir == 'asc' ? 'desc' : 'asc'})}">
+                       th:href="@{/students(keyword=${keyword}, major=${major}, sort='fullName', dir=${param.sort == 'fullName' and param.dir == 'asc' ? 'desc' : 'asc'})}">
                         Họ tên
                         <span th:if="${param.sort == 'fullName'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
@@ -91,10 +103,9 @@
 
                 <th>Email</th>
 
-                <!-- [CÂU 1]: Cột Ngày sinh -->
                 <th>
                     <a class="text-white text-decoration-none"
-                       th:href="@{/students(keyword=${keyword}, sort='dateOfBirth', dir=${param.sort == 'dateOfBirth' and param.dir == 'asc' ? 'desc' : 'asc'})}">
+                       th:href="@{/students(keyword=${keyword}, major=${major}, sort='dateOfBirth', dir=${param.sort == 'dateOfBirth' and param.dir == 'asc' ? 'desc' : 'asc'})}">
                         Ngày sinh
                         <span th:if="${param.sort == 'dateOfBirth'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
@@ -103,10 +114,9 @@
                 <th>Tuổi</th>
                 <th>Ngành</th>
 
-                <!-- [CÂU 1]: Cột GPA -->
                 <th>
                     <a class="text-white text-decoration-none"
-                       th:href="@{/students(keyword=${keyword}, sort='gpa', dir=${param.sort == 'gpa' and param.dir == 'asc' ? 'desc' : 'asc'})}">
+                       th:href="@{/students(keyword=${keyword}, major=${major}, sort='gpa', dir=${param.sort == 'gpa' and param.dir == 'asc' ? 'desc' : 'asc'})}">
                         GPA
                         <span th:if="${param.sort == 'gpa'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
                     </a>

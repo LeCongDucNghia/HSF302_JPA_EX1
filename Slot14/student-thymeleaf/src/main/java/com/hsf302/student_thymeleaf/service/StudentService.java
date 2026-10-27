@@ -24,27 +24,16 @@ public class StudentService {
         return studentRepository.findAll(Sort.by("id"));
     }
 
-    public List<Student> search(String keyword) {
-        if (keyword == null || keyword.isBlank()) {
-            return findAll();
-        }
-        String kw = keyword.trim();
-        return studentRepository
-                .findByStudentCodeContainingIgnoreCaseOrFullNameContainingIgnoreCaseOrderByIdAsc(kw, kw);
-    }
-
-    // [CÂU 1]: Hàm tìm kiếm có hỗ trợ sắp xếp linh hoạt
-    public List<Student> search(String keyword, String sortField, String dir) {
+    // [CÂU 1 + 2]: Tìm kiếm kết hợp Lọc theo ngành và Sắp xếp
+    public List<Student> search(String keyword, String major, String sortField, String dir) {
         Sort.Direction direction = "desc".equalsIgnoreCase(dir) ? Sort.Direction.DESC : Sort.Direction.ASC;
         String field = (sortField != null && !sortField.isBlank()) ? sortField : "id";
         Sort sort = Sort.by(direction, field);
 
-        if (keyword == null || keyword.isBlank()) {
-            return studentRepository.findAll(sort);
-        }
-        String kw = keyword.trim();
-        return studentRepository
-                .findByStudentCodeContainingIgnoreCaseOrFullNameContainingIgnoreCase(kw, kw, sort);
+        String kw = (keyword != null) ? keyword.trim() : "";
+        String mj = (major != null) ? major.trim() : "";
+
+        return studentRepository.searchAndFilter(kw, mj, sort);
     }
 
     public Optional<Student> findById(Long id) {

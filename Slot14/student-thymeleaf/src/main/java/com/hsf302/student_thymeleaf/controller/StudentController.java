@@ -34,20 +34,25 @@ public class StudentController {
         return majors;
     }
 
-    // [CÂU 1]: Nhận thêm sort và dir từ URL (mặc định sort=id, dir=asc)
+    // [CÂU 1 + 2]: Nhận cả keyword, major, sort, dir
     @GetMapping
     public String list(@RequestParam(required = false) String keyword,
+                       @RequestParam(required = false) String major,
                        @RequestParam(defaultValue = "id") String sort,
                        @RequestParam(defaultValue = "asc") String dir,
                        Model model) {
-        List<Student> students = studentService.search(keyword, sort, dir);
+
+        List<Student> students = studentService.search(keyword, major, sort, dir);
+
         model.addAttribute("students", students);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("major", major);
         model.addAttribute("sort", sort);
         model.addAttribute("dir", dir);
         model.addAttribute("totalStudents", students.size());
         model.addAttribute("avgGpa", studentService.averageGpa(students));
         model.addAttribute("activeMenu", "list");
+
         return "students/list";
     }
 
