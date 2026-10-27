@@ -11,17 +11,19 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0">Danh sách sinh viên</h2>
-        <!-- Đã sửa TODO 9.2: th:href -->
         <a th:href="@{/students/new}" class="btn btn-primary">+ Thêm sinh viên</a>
     </div>
 
-    <!-- TODO 9.3: Form tìm kiếm GET tới /students; ô input name="keyword" giữ lại giá trị ${keyword} -->
+    <!-- Form tìm kiếm: giữ lại sort và dir khi submit -->
     <form th:action="@{/students}" method="get" class="row g-2 mb-3">
         <div class="col-md-6">
             <input type="text" name="keyword" class="form-control"
                    placeholder="Tìm theo mã SV hoặc họ tên..."
                    th:value="${keyword}">
         </div>
+        <input type="hidden" name="sort" th:value="${sort}">
+        <input type="hidden" name="dir" th:value="${dir}">
+
         <div class="col-auto">
             <button type="submit" class="btn btn-outline-primary">Tìm kiếm</button>
         </div>
@@ -30,13 +32,13 @@
         </div>
     </form>
 
-    <!-- TODO 9.4: Thông báo kết quả tìm kiếm -->
+    <!-- Thông báo kết quả tìm kiếm -->
     <p class="text-muted" th:unless="${#strings.isEmpty(keyword)}"
        th:text="|Tìm thấy ${totalStudents} sinh viên cho từ khóa: ${keyword}|">
         Tìm thấy 1 sinh viên cho từ khóa: abc
     </p>
 
-    <!-- TODO 10: 3 thẻ thống kê -->
+    <!-- 3 thẻ thống kê -->
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="card stat-card text-bg-primary shadow-sm"><div class="card-body">
@@ -58,7 +60,7 @@
         </div>
     </div>
 
-    <!-- TODO 13.1: Nếu danh sách rỗng -->
+    <!-- Khi danh sách rỗng -->
     <div th:if="${#lists.isEmpty(students)}" class="alert alert-warning">
         Không có sinh viên nào.
     </div>
@@ -67,12 +69,55 @@
         <table class="table table-bordered table-hover align-middle bg-white mb-0">
             <thead class="table-dark">
             <tr>
-                <th>#</th><th>Mã SV</th><th>Họ tên</th><th>Email</th><th>Ngày sinh</th>
-                <th>Tuổi</th><th>Ngành</th><th>GPA</th><th>Xếp loại</th><th>Trạng thái</th><th>Thao tác</th>
+                <th>#</th>
+
+                <!-- [CÂU 1]: Cột Mã SV có thể click để sắp xếp -->
+                <th>
+                    <a class="text-white text-decoration-none"
+                       th:href="@{/students(keyword=${keyword}, sort='studentCode', dir=${param.sort == 'studentCode' and param.dir == 'asc' ? 'desc' : 'asc'})}">
+                        Mã SV
+                        <span th:if="${param.sort == 'studentCode'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <!-- [CÂU 1]: Cột Họ tên -->
+                <th>
+                    <a class="text-white text-decoration-none"
+                       th:href="@{/students(keyword=${keyword}, sort='fullName', dir=${param.sort == 'fullName' and param.dir == 'asc' ? 'desc' : 'asc'})}">
+                        Họ tên
+                        <span th:if="${param.sort == 'fullName'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>Email</th>
+
+                <!-- [CÂU 1]: Cột Ngày sinh -->
+                <th>
+                    <a class="text-white text-decoration-none"
+                       th:href="@{/students(keyword=${keyword}, sort='dateOfBirth', dir=${param.sort == 'dateOfBirth' and param.dir == 'asc' ? 'desc' : 'asc'})}">
+                        Ngày sinh
+                        <span th:if="${param.sort == 'dateOfBirth'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>Tuổi</th>
+                <th>Ngành</th>
+
+                <!-- [CÂU 1]: Cột GPA -->
+                <th>
+                    <a class="text-white text-decoration-none"
+                       th:href="@{/students(keyword=${keyword}, sort='gpa', dir=${param.sort == 'gpa' and param.dir == 'asc' ? 'desc' : 'asc'})}">
+                        GPA
+                        <span th:if="${param.sort == 'gpa'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
+                    </a>
+                </th>
+
+                <th>Xếp loại</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
             </tr>
             </thead>
             <tbody>
-            <!-- TODO 11 + 12: Duyệt danh sách sinh viên -->
             <tr th:each="s, stat : ${students}"
                 th:classappend="${s.gpa lt 5} ? 'table-danger'">
                 <td th:text="${stat.count}">1</td>
@@ -95,7 +140,6 @@
                           th:classappend="${s.active} ? 'text-bg-success' : 'text-bg-secondary'"
                           th:text="${s.active} ? 'Đang học' : 'Bảo lưu'">Đang học</span>
                 </td>
-                <!-- TODO 13.2: Thao tác -->
                 <td class="text-nowrap">
                     <a th:href="@{/students/{id}(id=${s.id})}" class="btn btn-sm btn-outline-info">Xem</a>
                     <a th:href="@{/students/{id}/edit(id=${s.id})}" class="btn btn-sm btn-outline-warning">Sửa</a>

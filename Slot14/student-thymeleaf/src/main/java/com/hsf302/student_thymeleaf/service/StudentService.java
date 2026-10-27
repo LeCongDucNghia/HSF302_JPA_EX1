@@ -29,14 +29,28 @@ public class StudentService {
             return findAll();
         }
         String kw = keyword.trim();
-        return studentRepository.findByStudentCodeContainingIgnoreCaseOrFullNameContainingIgnoreCaseOrderByIdAsc(kw, kw);
+        return studentRepository
+                .findByStudentCodeContainingIgnoreCaseOrFullNameContainingIgnoreCaseOrderByIdAsc(kw, kw);
+    }
+
+    // [CÂU 1]: Hàm tìm kiếm có hỗ trợ sắp xếp linh hoạt
+    public List<Student> search(String keyword, String sortField, String dir) {
+        Sort.Direction direction = "desc".equalsIgnoreCase(dir) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        String field = (sortField != null && !sortField.isBlank()) ? sortField : "id";
+        Sort sort = Sort.by(direction, field);
+
+        if (keyword == null || keyword.isBlank()) {
+            return studentRepository.findAll(sort);
+        }
+        String kw = keyword.trim();
+        return studentRepository
+                .findByStudentCodeContainingIgnoreCaseOrFullNameContainingIgnoreCase(kw, kw, sort);
     }
 
     public Optional<Student> findById(Long id) {
         return studentRepository.findById(id);
     }
 
-    /** id == null → INSERT, id != null → UPDATE */
     @Transactional
     public Student save(Student student) {
         return studentRepository.save(student);
@@ -47,7 +61,6 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
-    /** Kiểm tra trùng mã SV, bỏ qua chính sinh viên đang sửa (excludeId) */
     public boolean isStudentCodeDuplicated(String code, Long excludeId) {
         if (code == null || code.isBlank()) return false;
         String c = code.trim();
