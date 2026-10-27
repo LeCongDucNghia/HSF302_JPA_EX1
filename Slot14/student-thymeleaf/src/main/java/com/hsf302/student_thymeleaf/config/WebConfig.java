@@ -16,14 +16,14 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();
-        slr.setDefaultLocale(new Locale("vi")); // Mặc định Tiếng Việt
+        slr.setDefaultLocale(Locale.forLanguageTag("vi")); // Mặc định Tiếng Việt
         return slr;
     }
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-        lci.setParamName("lang"); // URL có ?lang=en hoặc ?lang=vi sẽ tự chuyển đổi
+        lci.setParamName("lang"); // Đổi ngôn ngữ qua ?lang=vi hoặc ?lang=en
         return lci;
     }
 

@@ -4,27 +4,27 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/main}">
 <head>
-    <title>Danh sách sinh viên</title>
+    <title th:text="#{title.list}">Danh sách sinh viên</title>
 </head>
 <body>
 <section layout:fragment="content">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="mb-0">Danh sách sinh viên</h2>
-        <a th:href="@{/students/new}" class="btn btn-primary">+ Thêm sinh viên</a>
+        <h2 class="mb-0" th:text="#{title.list}">Danh sách sinh viên</h2>
+        <a th:href="@{/students/new}" class="btn btn-primary" th:text="#{btn.add}">+ Thêm sinh viên</a>
     </div>
 
     <!-- Form tìm kiếm và lọc ngành -->
     <form th:action="@{/students}" method="get" class="row g-2 mb-3">
         <div class="col-md-5">
             <input type="text" name="keyword" class="form-control"
-                   placeholder="Tìm theo mã SV hoặc họ tên..."
+                   th:placeholder="#{search.placeholder}"
                    th:value="${keyword}">
         </div>
 
         <div class="col-md-3">
             <select name="major" class="form-select">
-                <option value="">-- Tất cả ngành --</option>
+                <option value="" th:text="#{filter.all_majors}">-- Tất cả ngành --</option>
                 <option th:each="m : ${majors}"
                         th:value="${m.key}"
                         th:selected="${m.key == param.major}"
@@ -36,47 +36,68 @@
         <input type="hidden" name="dir" th:value="${dir}">
 
         <div class="col-auto">
-            <button type="submit" class="btn btn-outline-primary">Tìm kiếm</button>
+            <button type="submit" class="btn btn-outline-primary" th:text="#{btn.search}">Tìm kiếm</button>
         </div>
         <div class="col-auto" th:if="${not #strings.isEmpty(keyword) or not #strings.isEmpty(param.major)}">
-            <a th:href="@{/students}" class="btn btn-outline-secondary">Xóa lọc</a>
+            <a th:href="@{/students}" class="btn btn-outline-secondary" th:text="#{btn.clear}">Xóa lọc</a>
         </div>
     </form>
-
-    <!-- Thông báo kết quả tìm kiếm -->
-    <p class="text-muted" th:if="${not #strings.isEmpty(keyword) or not #strings.isEmpty(param.major)}"
-       th:text="|Tìm thấy ${totalStudents} sinh viên phù hợp.|">
-        Tìm thấy 1 sinh viên phù hợp.
-    </p>
 
     <!-- 3 thẻ thống kê -->
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="card stat-card text-bg-primary shadow-sm"><div class="card-body">
-                <div>Tổng số sinh viên</div>
+                <div th:text="#{stat.total}">Tổng số sinh viên</div>
                 <div class="value" th:text="${totalStudents}">0</div>
             </div></div>
         </div>
         <div class="col-md-4">
             <div class="card stat-card text-bg-success shadow-sm"><div class="card-body">
-                <div>GPA trung bình (trang)</div>
+                <div th:text="#{stat.avg_gpa}">GPA trung bình (trang)</div>
                 <div class="value" th:text="${#numbers.formatDecimal(avgGpa, 1, 2)}">0.00</div>
             </div></div>
         </div>
         <div class="col-md-4">
             <div class="card stat-card text-bg-info shadow-sm"><div class="card-body">
-                <div>Đang học (trang)</div>
+                <div th:text="#{stat.active}">Đang học (trang)</div>
                 <div class="value" th:text="${#lists.size(students.?[active])}">0</div>
             </div></div>
         </div>
     </div>
 
+    <!-- Bảng thống kê theo từng ngành (Câu 6) -->
+    <div class="card mb-4 shadow-sm" th:if="${stats}">
+        <div class="card-header bg-dark text-white fw-semibold" th:text="#{stat.by_major}">
+            Thống kê số lượng sinh viên theo từng ngành
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-sm table-striped mb-0 text-center">
+                <thead class="table-light">
+                <tr>
+                    <th th:text="#{stat.col_major_code}">Mã ngành</th>
+                    <th th:text="#{stat.col_major_name}">Tên ngành</th>
+                    <th th:text="#{stat.col_count}">Số lượng SV</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="e : ${stats}">
+                    <td class="fw-bold" th:text="${e.key}">SE</td>
+                    <td th:text="${majors[e.key]} ?: 'Khác'">Kỹ thuật phần mềm</td>
+                    <td>
+                        <span class="badge text-bg-primary rounded-pill px-3 py-1" th:text="${e.value}">0</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- Khi danh sách rỗng -->
-    <div th:if="${#lists.isEmpty(students)}" class="alert alert-warning">
+    <div th:if="${#lists.isEmpty(students)}" class="alert alert-warning" th:text="#{msg.no_student}">
         Không có sinh viên nào.
     </div>
 
-    <!-- Bảng dữ liệu -->
+    <!-- Bảng danh sách sinh viên -->
     <div class="table-responsive shadow-sm" th:unless="${#lists.isEmpty(students)}">
         <table class="table table-bordered table-hover align-middle bg-white mb-0">
             <thead class="table-dark">
@@ -85,37 +106,37 @@
                 <th>
                     <a class="text-white text-decoration-none"
                        th:href="@{/students(keyword=${keyword}, major=${major}, page=${page.number}, sort='studentCode', dir=${param.sort == 'studentCode' and param.dir == 'asc' ? 'desc' : 'asc'})}">
-                        Mã SV
+                        <span th:text="#{th.code}">Mã SV</span>
                         <span th:if="${param.sort == 'studentCode'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
                 <th>
                     <a class="text-white text-decoration-none"
                        th:href="@{/students(keyword=${keyword}, major=${major}, page=${page.number}, sort='fullName', dir=${param.sort == 'fullName' and param.dir == 'asc' ? 'desc' : 'asc'})}">
-                        Họ tên
+                        <span th:text="#{th.name}">Họ tên</span>
                         <span th:if="${param.sort == 'fullName'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
-                <th>Email</th>
+                <th th:text="#{th.email}">Email</th>
                 <th>
                     <a class="text-white text-decoration-none"
                        th:href="@{/students(keyword=${keyword}, major=${major}, page=${page.number}, sort='dateOfBirth', dir=${param.sort == 'dateOfBirth' and param.dir == 'asc' ? 'desc' : 'asc'})}">
-                        Ngày sinh
+                        <span th:text="#{th.dob}">Ngày sinh</span>
                         <span th:if="${param.sort == 'dateOfBirth'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
-                <th>Tuổi</th>
-                <th>Ngành</th>
+                <th th:text="#{th.age}">Tuổi</th>
+                <th th:text="#{th.major}">Ngành</th>
                 <th>
                     <a class="text-white text-decoration-none"
                        th:href="@{/students(keyword=${keyword}, major=${major}, page=${page.number}, sort='gpa', dir=${param.sort == 'gpa' and param.dir == 'asc' ? 'desc' : 'asc'})}">
-                        GPA
+                        <span th:text="#{th.gpa}">GPA</span>
                         <span th:if="${param.sort == 'gpa'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
-                <th>Xếp loại</th>
-                <th>Trạng thái</th>
-                <th>Thao tác</th>
+                <th th:text="#{th.rank}">Xếp loại</th>
+                <th th:text="#{th.status}">Trạng thái</th>
+                <th th:text="#{th.actions}">Thao tác</th>
             </tr>
             </thead>
             <tbody>
@@ -129,23 +150,20 @@
                 <td th:text="${s.age}">22</td>
                 <td th:text="${majors[s.major]}">Kỹ thuật phần mềm</td>
                 <td class="fw-bold" th:text="${#numbers.formatDecimal(s.gpa, 1, 2)}">8.00</td>
-
-                <!-- [CÂU 4]: Gọi fragment rank(rank) bằng th:replace -->
                 <td>
                     <th:block th:replace="~{fragments/badges :: rank(${s.rank})}"></th:block>
                 </td>
-
                 <td>
                     <span class="badge"
                           th:classappend="${s.active} ? 'text-bg-success' : 'text-bg-secondary'"
-                          th:text="${s.active} ? 'Đang học' : 'Bảo lưu'">Đang học</span>
+                          th:text="${s.active} ? #{status.active} : #{status.reserve}">Đang học</span>
                 </td>
                 <td class="text-nowrap">
-                    <a th:href="@{/students/{id}(id=${s.id})}" class="btn btn-sm btn-outline-info">Xem</a>
-                    <a th:href="@{/students/{id}/edit(id=${s.id})}" class="btn btn-sm btn-outline-warning">Sửa</a>
+                    <a th:href="@{/students/{id}(id=${s.id})}" class="btn btn-sm btn-outline-info" th:text="#{btn.view}">Xem</a>
+                    <a th:href="@{/students/{id}/edit(id=${s.id})}" class="btn btn-sm btn-outline-warning" th:text="#{btn.edit}">Sửa</a>
                     <form th:action="@{/students/{id}/delete(id=${s.id})}" method="post" class="d-inline"
-                          onsubmit="return confirm('Bạn chắc chắn muốn xóa sinh viên này?');">
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Xóa</button>
+                          th:onsubmit="|return confirm('#{msg.confirm_delete}');|">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" th:text="#{btn.delete}">Xóa</button>
                     </form>
                 </td>
             </tr>

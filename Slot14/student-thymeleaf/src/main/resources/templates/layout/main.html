@@ -5,34 +5,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- TODO 8.1: Dùng layout:title-pattern để tiêu đề tab có dạng:
-                   "<Tiêu đề trang con> | Student Manager" -->
     <title layout:title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE">Student Manager</title>
 
-    <!-- TODO 8.2: Link Bootstrap OFFLINE + style.css bằng th:href="@{...}" -->
+    <!-- Đường dẫn Bootstrap offline chuẩn trong thư mục static của bạn -->
     <link rel="stylesheet" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
     <div class="container">
-        <a class="navbar-brand" th:href="@{/students}">Student Manager</a>
+        <a class="navbar-brand fw-bold" th:href="@{/students}">Student Manager</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="mainNav">
-            <ul class="navbar-nav ms-auto">
-                <!-- TODO 8.3: th:href tới /students và /students/new
-                               th:classappend="... ? 'active'" dựa vào ${activeMenu} ('list' / 'new') -->
+            <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/students}"
-                       th:classappend="${activeMenu == 'list'} ? 'active'">Danh sách</a>
+                       th:classappend="${activeMenu == 'list'} ? 'active'"
+                       th:text="#{menu.list}">Danh sách</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/students/new}"
-                       th:classappend="${activeMenu == 'new'} ? 'active'">Thêm mới</a>
+                       th:classappend="${activeMenu == 'new'} ? 'active'"
+                       th:text="#{menu.new}">Thêm mới</a>
+                </li>
+
+                <!-- Dropdown chuyển đổi ngôn ngữ -->
+                <li class="nav-item dropdown ms-lg-3">
+                    <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        🌐 <span th:text="#{menu.lang}">Ngôn ngữ</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                        <li><a class="dropdown-item" th:href="@{/students(lang='vi')}">🇻🇳 Tiếng Việt</a></li>
+                        <li><a class="dropdown-item" th:href="@{/students(lang='en')}">🇬🇧 English</a></li>
+                    </ul>
                 </li>
             </ul>
         </div>
@@ -40,30 +48,22 @@
 </nav>
 
 <main class="container my-4 flex-grow-1">
-    <!-- TODO 8.4: Hiển thị flash message ${successMessage} (alert-success)
-                   và ${errorMessage} (alert-danger), chỉ khi có giá trị (th:if),
-                   có nút đóng (btn-close, data-bs-dismiss="alert") -->
     <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
         <span th:text="${successMessage}">Thành công</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
         <span th:text="${errorMessage}">Lỗi</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
-    <!-- TODO 8.5: Vùng nội dung để trang con thay thế: layout:fragment="content" -->
-    <section layout:fragment="content">
-        <p>Nội dung trang con sẽ thay thế ở đây.</p>
-    </section>
+    <section layout:fragment="content"></section>
 </main>
 
-<footer class="bg-dark text-white-50 text-center py-3">
-    <!-- TODO 8.6: Hiển thị năm hiện tại bằng #temporals -->
+<footer class="bg-dark text-white-50 text-center py-3 mt-auto">
     &copy; <span th:text="${#temporals.year(#temporals.createNow())}">2026</span> HSF302 – Student Manager
 </footer>
 
-<!-- TODO 8.7: Script Bootstrap OFFLINE (chú ý đường dẫn /vendor/bootstrap/js/) -->
 <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>
