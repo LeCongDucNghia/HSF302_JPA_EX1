@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- [CÂU 4]: Fragment hiển thị badge xếp loại nhận tham số rank -->
+<th:block th:fragment="rank(rank)">
+    <span th:switch="${rank}">
+        <span th:case="'Xuất sắc'"   class="badge text-bg-success" th:text="${rank}">Xuất sắc</span>
+        <span th:case="'Giỏi'"       class="badge text-bg-primary" th:text="${rank}">Giỏi</span>
+        <span th:case="'Khá'"        class="badge text-bg-info"    th:text="${rank}">Khá</span>
+        <span th:case="'Trung bình'" class="badge text-bg-warning" th:text="${rank}">Trung bình</span>
+        <span th:case="*"            class="badge text-bg-danger"  th:text="${rank}">Yếu</span>
+    </span>
+</th:block>
+
+</body>
+</html>

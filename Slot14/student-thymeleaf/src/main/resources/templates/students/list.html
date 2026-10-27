@@ -82,8 +82,6 @@
             <thead class="table-dark">
             <tr>
                 <th>#</th>
-
-                <!-- Click sắp xếp giữ lại trang, keyword, major -->
                 <th>
                     <a class="text-white text-decoration-none"
                        th:href="@{/students(keyword=${keyword}, major=${major}, page=${page.number}, sort='studentCode', dir=${param.sort == 'studentCode' and param.dir == 'asc' ? 'desc' : 'asc'})}">
@@ -91,7 +89,6 @@
                         <span th:if="${param.sort == 'studentCode'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
-
                 <th>
                     <a class="text-white text-decoration-none"
                        th:href="@{/students(keyword=${keyword}, major=${major}, page=${page.number}, sort='fullName', dir=${param.sort == 'fullName' and param.dir == 'asc' ? 'desc' : 'asc'})}">
@@ -99,9 +96,7 @@
                         <span th:if="${param.sort == 'fullName'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
-
                 <th>Email</th>
-
                 <th>
                     <a class="text-white text-decoration-none"
                        th:href="@{/students(keyword=${keyword}, major=${major}, page=${page.number}, sort='dateOfBirth', dir=${param.sort == 'dateOfBirth' and param.dir == 'asc' ? 'desc' : 'asc'})}">
@@ -109,10 +104,8 @@
                         <span th:if="${param.sort == 'dateOfBirth'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
-
                 <th>Tuổi</th>
                 <th>Ngành</th>
-
                 <th>
                     <a class="text-white text-decoration-none"
                        th:href="@{/students(keyword=${keyword}, major=${major}, page=${page.number}, sort='gpa', dir=${param.sort == 'gpa' and param.dir == 'asc' ? 'desc' : 'asc'})}">
@@ -120,7 +113,6 @@
                         <span th:if="${param.sort == 'gpa'}" th:text="${param.dir == 'asc' ? '▲' : '▼'}"></span>
                     </a>
                 </th>
-
                 <th>Xếp loại</th>
                 <th>Trạng thái</th>
                 <th>Thao tác</th>
@@ -129,7 +121,6 @@
             <tbody>
             <tr th:each="s, stat : ${students}"
                 th:classappend="${s.gpa lt 5} ? 'table-danger'">
-                <!-- Số thứ tự liên tục theo trang: 1, 2, 3 ở trang 1; 4, 5 ở trang 2 -->
                 <td th:text="${stat.count + (page.number * page.size)}">1</td>
                 <td class="fw-semibold" th:text="${s.studentCode}">SE180001</td>
                 <td th:text="${#strings.toUpperCase(s.fullName)}">NGUYỄN VĂN A</td>
@@ -138,13 +129,12 @@
                 <td th:text="${s.age}">22</td>
                 <td th:text="${majors[s.major]}">Kỹ thuật phần mềm</td>
                 <td class="fw-bold" th:text="${#numbers.formatDecimal(s.gpa, 1, 2)}">8.00</td>
-                <td th:switch="${s.rank}">
-                    <span th:case="'Xuất sắc'"   class="badge text-bg-success" th:text="${s.rank}"></span>
-                    <span th:case="'Giỏi'"       class="badge text-bg-primary" th:text="${s.rank}"></span>
-                    <span th:case="'Khá'"        class="badge text-bg-info"    th:text="${s.rank}"></span>
-                    <span th:case="'Trung bình'" class="badge text-bg-warning" th:text="${s.rank}"></span>
-                    <span th:case="*"            class="badge text-bg-danger"  th:text="${s.rank}"></span>
+
+                <!-- [CÂU 4]: Gọi fragment rank(rank) bằng th:replace -->
+                <td>
+                    <th:block th:replace="~{fragments/badges :: rank(${s.rank})}"></th:block>
                 </td>
+
                 <td>
                     <span class="badge"
                           th:classappend="${s.active} ? 'text-bg-success' : 'text-bg-secondary'"
@@ -163,16 +153,13 @@
         </table>
     </div>
 
-    <!-- [CÂU 3]: Thanh phân trang đúng yêu cầu đề bài: dùng page.totalPages, page.number và #numbers.sequence(1, page.totalPages) -->
+    <!-- Thanh phân trang « 1 2 » -->
     <nav th:if="${page.totalPages > 1}" class="mt-4">
         <ul class="pagination justify-content-center">
-            <!-- Nút Trước («) -->
             <li class="page-item" th:classappend="${page.first} ? 'disabled'">
                 <a class="page-link"
                    th:href="@{/students(page=${page.number - 1}, keyword=${keyword}, major=${major}, sort=${sort}, dir=${dir})}">&laquo;</a>
             </li>
-
-            <!-- Sinh các nút số trang: 1, 2... bằng #numbers.sequence(1, page.totalPages) -->
             <li class="page-item"
                 th:each="i : ${#numbers.sequence(1, page.totalPages)}"
                 th:classappend="${page.number == i - 1} ? 'active'">
@@ -180,8 +167,6 @@
                    th:href="@{/students(page=${i - 1}, keyword=${keyword}, major=${major}, sort=${sort}, dir=${dir})}"
                    th:text="${i}">1</a>
             </li>
-
-            <!-- Nút Sau (») -->
             <li class="page-item" th:classappend="${page.last} ? 'disabled'">
                 <a class="page-link"
                    th:href="@{/students(page=${page.number + 1}, keyword=${keyword}, major=${major}, sort=${sort}, dir=${dir})}">&raquo;</a>
