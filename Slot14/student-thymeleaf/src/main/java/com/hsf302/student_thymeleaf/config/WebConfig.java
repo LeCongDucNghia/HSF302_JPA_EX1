@@ -1,7 +1,9 @@
 package com.hsf302.student_thymeleaf.config;
 
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,15 +18,25 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();
-        slr.setDefaultLocale(Locale.forLanguageTag("vi")); // Mặc định Tiếng Việt
+        slr.setDefaultLocale(Locale.forLanguageTag("vi"));
         return slr;
     }
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-        lci.setParamName("lang"); // Đổi ngôn ngữ qua ?lang=vi hoặc ?lang=en
+        lci.setParamName("lang");
         return lci;
+    }
+
+    @Bean
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("classpath:messages");
+        messageSource.setDefaultEncoding("UTF-8");
+        // BẮT BUỘC DÒNG NÀY: Ngăn Java tự nhảy về tiếng Anh của Windows
+        messageSource.setFallbackToSystemLocale(false);
+        return messageSource;
     }
 
     @Override
