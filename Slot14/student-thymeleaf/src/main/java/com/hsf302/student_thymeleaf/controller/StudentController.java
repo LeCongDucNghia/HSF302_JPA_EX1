@@ -3,6 +3,7 @@ package com.hsf302.student_thymeleaf.controller;
 import com.hsf302.student_thymeleaf.entity.Student;
 import com.hsf302.student_thymeleaf.service.StudentService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,23 +34,25 @@ public class StudentController {
         return majors;
     }
 
-    // [CÂU 1 + 2]: Nhận cả keyword, major, sort, dir
+    // [CÂU 3]: Nhận tham số page (mặc định 0), truyền "page" vào Model
     @GetMapping
     public String list(@RequestParam(required = false) String keyword,
                        @RequestParam(required = false) String major,
+                       @RequestParam(defaultValue = "0") int page,
                        @RequestParam(defaultValue = "id") String sort,
                        @RequestParam(defaultValue = "asc") String dir,
                        Model model) {
 
-        List<Student> students = studentService.search(keyword, major, sort, dir);
+        Page<Student> studentPage = studentService.search(keyword, major, page, sort, dir);
 
-        model.addAttribute("students", students);
+        model.addAttribute("page", studentPage);
+        model.addAttribute("students", studentPage.getContent());
+        model.addAttribute("totalStudents", studentPage.getTotalElements());
         model.addAttribute("keyword", keyword);
         model.addAttribute("major", major);
         model.addAttribute("sort", sort);
         model.addAttribute("dir", dir);
-        model.addAttribute("totalStudents", students.size());
-        model.addAttribute("avgGpa", studentService.averageGpa(students));
+        model.addAttribute("avgGpa", studentService.averageGpa(studentPage.getContent()));
         model.addAttribute("activeMenu", "list");
 
         return "students/list";

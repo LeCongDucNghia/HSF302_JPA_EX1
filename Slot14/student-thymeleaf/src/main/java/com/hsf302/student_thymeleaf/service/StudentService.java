@@ -2,6 +2,9 @@ package com.hsf302.student_thymeleaf.service;
 
 import com.hsf302.student_thymeleaf.entity.Student;
 import com.hsf302.student_thymeleaf.repository.StudentRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,16 +27,19 @@ public class StudentService {
         return studentRepository.findAll(Sort.by("id"));
     }
 
-    // [CÂU 1 + 2]: Tìm kiếm kết hợp Lọc theo ngành và Sắp xếp
-    public List<Student> search(String keyword, String major, String sortField, String dir) {
+    // [CÂU 3]: Phân trang với PageRequest.of(page, 3, sort)
+    public Page<Student> search(String keyword, String major, int page, String sortField, String dir) {
         Sort.Direction direction = "desc".equalsIgnoreCase(dir) ? Sort.Direction.DESC : Sort.Direction.ASC;
         String field = (sortField != null && !sortField.isBlank()) ? sortField : "id";
         Sort sort = Sort.by(direction, field);
 
+        // Mỗi trang 3 sinh viên
+        Pageable pageable = PageRequest.of(page, 3, sort);
+
         String kw = (keyword != null) ? keyword.trim() : "";
         String mj = (major != null) ? major.trim() : "";
 
-        return studentRepository.searchAndFilter(kw, mj, sort);
+        return studentRepository.searchAndFilter(kw, mj, pageable);
     }
 
     public Optional<Student> findById(Long id) {

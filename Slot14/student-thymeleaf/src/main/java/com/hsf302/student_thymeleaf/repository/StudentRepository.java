@@ -1,7 +1,8 @@
 package com.hsf302.student_thymeleaf.repository;
 
 import com.hsf302.student_thymeleaf.entity.Student;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,14 +13,14 @@ import java.util.List;
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
-    // [CÂU 1 + 2]: Tìm kiếm theo từ khóa + Lọc ngành + Sắp xếp động
+    // [CÂU 1 + 2 + 3]: Tìm kiếm + Lọc ngành + Sắp xếp + Phân trang với Pageable
     @Query("SELECT s FROM Student s WHERE " +
             "(:keyword IS NULL OR :keyword = '' OR LOWER(s.studentCode) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             " OR LOWER(s.fullName) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
             "AND (:major IS NULL OR :major = '' OR s.major = :major)")
-    List<Student> searchAndFilter(@Param("keyword") String keyword,
+    Page<Student> searchAndFilter(@Param("keyword") String keyword,
                                   @Param("major") String major,
-                                  Sort sort);
+                                  Pageable pageable);
 
     boolean existsByStudentCodeIgnoreCase(String studentCode);
 
