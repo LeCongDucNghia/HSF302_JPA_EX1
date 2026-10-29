@@ -93,6 +93,13 @@ public class DrinkOrderApp extends Application {
         Scene scene = new Scene(root, 540, 580);
 
 
+    }
+
+    private void registerEvents() {
+        // TODO 4: Cách 1 — method reference (gọn khi logic dài, tách ra method riêng)
+        btnCalc.setOnAction(this::handleCalc);
+
+
 
     public static void main(String[] args) {
         launch(args);
