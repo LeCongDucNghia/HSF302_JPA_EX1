@@ -99,6 +99,11 @@ public class DrinkOrderApp extends Application {
         // TODO 4: Cách 1 — method reference (gọn khi logic dài, tách ra method riêng)
         btnCalc.setOnAction(this::handleCalc);
 
+        // TODO 5: Cách 2 — lambda (phổ biến nhất)
+        btnClear.setOnAction(e -> {
+            reset();
+            log("Bấm Làm lại");
+        });
 
 
     public static void main(String[] args) {
