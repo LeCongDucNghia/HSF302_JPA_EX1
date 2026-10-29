@@ -128,6 +128,13 @@ public class DrinkOrderApp extends Application {
         chkJelly.setOnAction(onCheck);
         chkLessSugar.setOnAction(onCheck);
 
+        // TODO 8: ChangeListener — lắng nghe GIÁ TRỊ thay đổi (do người dùng hoặc do code)
+        tgSize.selectedToggleProperty().addListener((obs, oldT, newT) -> {
+            if (newT != null) log("Đổi size → " + ((RadioButton) newT).getText());
+        });
+        tfQty.textProperty().addListener((obs, oldV, newV) -> {
+            if (!newV.matches("\\d{0,2}")) tfQty.setText(oldV);   // chỉ cho gõ tối đa 2 chữ số
+        });
 
 
     public static void main(String[] args) {
