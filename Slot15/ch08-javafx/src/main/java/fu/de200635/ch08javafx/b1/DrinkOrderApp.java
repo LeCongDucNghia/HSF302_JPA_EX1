@@ -92,7 +92,19 @@ public class DrinkOrderApp extends Application {
 
         Scene scene = new Scene(root, 540, 580);
 
+        // TODO 9: Event FILTER trên Scene — chạy ở pha capturing, TRƯỚC khi control con nhận phím
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            if (e.getCode() == KeyCode.ESCAPE) {
+                reset();
+                log("ESC → làm lại form");
+                e.consume();                // chặn, không cho sự kiện đi tiếp
+            }
+        });
 
+        stage.setScene(scene);
+        stage.setTitle("B1 - Controls & Sự kiện");
+        stage.show();
+        tfName.requestFocus();
     }
 
     private void registerEvents() {
@@ -135,6 +147,7 @@ public class DrinkOrderApp extends Application {
         tfQty.textProperty().addListener((obs, oldV, newV) -> {
             if (!newV.matches("\\d{0,2}")) tfQty.setText(oldV);   // chỉ cho gõ tối đa 2 chữ số
         });
+
 
 
     public static void main(String[] args) {
