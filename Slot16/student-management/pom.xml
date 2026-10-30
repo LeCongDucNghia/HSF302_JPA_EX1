@@ -19,7 +19,6 @@
     <modules>
         <module>data-module</module>
         <module>ui-module</module>
-        <module>ui-module</module>
     </modules>
 
     <properties>
