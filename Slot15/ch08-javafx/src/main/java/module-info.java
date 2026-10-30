@@ -1,8 +1,4 @@
 module fu.de200635.ch08javafx {
-    requires javafx.controls;
-    requires javafx.fxml;
-    requires javafx.web;
-
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires net.synedra.validatorfx;
@@ -36,8 +32,8 @@ module fu.de200635.ch08javafx {
     exports fu.de200635.ch08javafx.b6;
     exports fu.de200635.ch08javafx.t1;
     exports fu.de200635.ch08javafx.t2;
-    exports fu.de200635.ch08javafxt3;
-    exports cfu.de200635.ch08javafx.t4;
+    exports fu.de200635.ch08javafx.t3;
+    exports fu.de200635.ch08javafx.t4;
     exports fu.de200635.ch08javafx.t5;
     exports fu.de200635.ch08javafx.t6;
 }
