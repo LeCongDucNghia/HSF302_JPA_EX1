@@ -226,6 +226,20 @@ public class RegisterApp extends Application {
         return check(errMajor, cbMajor.getValue() != null, "Vui lòng chọn ngành");
     }
 
+    // TODO 6: Độ mạnh mật khẩu (0–4 điểm)
+    private void updateStrength(String s) {
+        int score = 0;
+        if (s.length() >= 8) score++;
+        if (s.matches(".*[a-z].*") && s.matches(".*[A-Z].*")) score++;
+        if (s.matches(".*\\d.*")) score++;
+        if (s.matches(".*[^\\w\\s].*")) score++;
+
+        pbStrength.setProgress(score / 4.0);
+        pbStrength.setStyle("-fx-accent: " + LEVEL_COLOR[score] + ";");   // -fx-accent = màu thanh progress
+        lblStrength.setText(s.isEmpty() ? "" : LEVEL_TEXT[score]);
+        lblStrength.setStyle("-fx-text-fill: " + LEVEL_COLOR[score] + ";");
+    }
+
 
 
     public static void main(String[] args) {
