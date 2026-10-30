@@ -134,7 +134,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <!-- Đổi theo bài đang chạy -->
-                            <mainClass>fu.de200635.ch08javafx/fu.de200635.ch08javafx.RegisterApp</mainClass>
+                            <mainClass>fu.de200635.ch08javafx/fu.de200635.ch08javafx.LoginController</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

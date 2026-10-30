@@ -13,7 +13,8 @@ module fu.de200635.ch08javafx {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;      // T5
-    requires javafx.media;    // T5
+    requires javafx.media;
+    requires java.desktop;    // T5
 
     // FXMLLoader cần reflection vào controller (@FXML private field/method)
     opens fu.de200635.ch08javafx.b4 to javafx.fxml;
