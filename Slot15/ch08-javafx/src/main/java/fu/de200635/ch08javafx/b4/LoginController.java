@@ -30,6 +30,22 @@ public class LoginController {
             "teacher", new String[]{"Teacher@123", "Giảng viên"});
     private int failedCount = 0;
 
+    // TODO 4: initialize() — chạy SAU khi các @FXML đã được inject (constructor thì chưa!)
+    @FXML
+    public void initialize() {
+        // Hai ô password đồng bộ nội dung
+        tfPasswordVisible.textProperty().bindBidirectional(pfPassword.textProperty());
+        // Hiện/ẩn: visible + managed (managed=false để node không chiếm chỗ trong layout)
+        tfPasswordVisible.visibleProperty().bind(chkShow.selectedProperty());
+        tfPasswordVisible.managedProperty().bind(chkShow.selectedProperty());
+        pfPassword.visibleProperty().bind(chkShow.selectedProperty().not());
+        pfPassword.managedProperty().bind(chkShow.selectedProperty().not());
+
+        btnLogin.disableProperty().bind(tfUsername.textProperty().isEmpty()
+                .or(pfPassword.textProperty().isEmpty()).or(cbRole.valueProperty().isNull()));
+        Platform.runLater(tfUsername::requestFocus);
+    }
+
 
 
     @FXML
