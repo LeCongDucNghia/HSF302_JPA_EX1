@@ -1,4 +1,4 @@
-package fu.de200635.exception;
+package fu.de200635.data.exception;
 
 public class StudentNotFoundException extends RuntimeException {
     public StudentNotFoundException(Long id) { super("Student not found: " + id); }

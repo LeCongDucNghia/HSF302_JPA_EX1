@@ -1,6 +1,6 @@
-package fu.de200635.service;
+package fu.de200635.data.service;
 
-import fu.de200635.pojo.Student;
+import fu.de200635.data.pojo.Student;
 import java.util.List;
 
 public interface StudentService {

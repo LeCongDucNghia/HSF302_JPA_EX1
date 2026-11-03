@@ -1,7 +1,7 @@
 package repository;
 
-import fu.de200635.pojo.Student;
-import fu.de200635.repository.StudentRepository;
+import fu.de200635.data.pojo.Student;
+import fu.de200635.data.repository.StudentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

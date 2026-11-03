@@ -1,6 +1,6 @@
-package fu.de200635.repository;
+package fu.de200635.data.repository;
 
-import fu.de200635.pojo.Student;
+import fu.de200635.data.pojo.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

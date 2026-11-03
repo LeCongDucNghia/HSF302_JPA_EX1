@@ -1,10 +1,10 @@
 package service;
 
-import fu.de200635.exception.StudentNotFoundException;
-import fu.de200635.exception.ValidationException;
-import fu.de200635.pojo.Student;
-import fu.de200635.service.StudentService;
-import fu.de200635.service.StudentServiceImpl;
+import fu.de200635.data.exception.StudentNotFoundException;
+import fu.de200635.data.exception.ValidationException;
+import fu.de200635.data.pojo.Student;
+import fu.de200635.data.service.StudentService;
+import fu.de200635.data.service.StudentServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

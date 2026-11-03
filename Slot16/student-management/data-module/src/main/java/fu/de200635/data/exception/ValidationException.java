@@ -1,4 +1,4 @@
-package fu.de200635.exception;
+package fu.de200635.data.exception;
 
 public class ValidationException extends RuntimeException {
     public ValidationException(String message) { super(message); }

@@ -1,9 +1,9 @@
-package fu.de200635.service;
+package fu.de200635.data.service;
 
-import fu.de200635.exception.StudentNotFoundException;
-import fu.de200635.exception.ValidationException;
-import fu.de200635.pojo.Student;
-import fu.de200635.repository.StudentRepository;
+import fu.de200635.data.exception.StudentNotFoundException;
+import fu.de200635.data.exception.ValidationException;
+import fu.de200635.data.pojo.Student;
+import fu.de200635.data.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
