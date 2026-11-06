@@ -11,7 +11,7 @@
     </padding>
     <Button onAction="#onHelloButtonClick" text="Click here" />
 
-    <Label fx:id="welcomeText" prefHeight="18.0" prefWidth="36.0" text="Hello!" />
+    <Label fx:id="welcomeText" prefHeight="18.0" prefWidth="219.0" text="Hello!" textAlignment="CENTER" />
    <effect>
       <Glow level="0.13" />
    </effect>

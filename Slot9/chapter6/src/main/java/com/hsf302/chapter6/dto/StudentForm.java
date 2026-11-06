@@ -2,6 +2,7 @@ package com.hsf302.chapter6.dto;
 
 import jakarta.validation.constraints.*;
 
+/** Dữ liệu form: chỉ chứa những gì người dùng nhập, không phải entity. */
 public class StudentForm {
 
     private Long id;
@@ -12,6 +13,7 @@ public class StudentForm {
 
     @NotBlank(message = "Email không được để trống")
     @Email(message = "Email không đúng định dạng")
+    @Size(max = 100, message = "Email tối đa 100 ký tự")
     private String email;
 
     @NotNull(message = "Tuổi không được để trống")
@@ -19,18 +21,17 @@ public class StudentForm {
     @Max(value = 30, message = "Tuổi tối đa là 30")
     private Integer age;
 
-    @NotBlank(message = "Chuyên ngành không được để trống")
-    private String major;
+    // Form chỉ gửi id của chuyên ngành; Service sẽ tra ra entity Major
+    @NotNull(message = "Vui lòng chọn chuyên ngành")
+    private Long majorId;
 
     @NotNull(message = "GPA không được để trống")
     @DecimalMin(value = "0.0", message = "GPA tối thiểu là 0.0")
     @DecimalMax(value = "4.0", message = "GPA tối đa là 4.0")
     private Double gpa;
 
-    // Constructors, Getters & Setters
     public StudentForm() {}
 
-    // Getters và Setters...
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getName() { return name; }
@@ -39,8 +40,8 @@ public class StudentForm {
     public void setEmail(String email) { this.email = email; }
     public Integer getAge() { return age; }
     public void setAge(Integer age) { this.age = age; }
-    public String getMajor() { return major; }
-    public void setMajor(String major) { this.major = major; }
+    public Long getMajorId() { return majorId; }
+    public void setMajorId(Long majorId) { this.majorId = majorId; }
     public Double getGpa() { return gpa; }
     public void setGpa(Double gpa) { this.gpa = gpa; }
 }

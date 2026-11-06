@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
 <body>
-$END$
+<!-- Tiêu đề cột có thể click: ?sort=<field>,asc|desc. Click lại cột đang sort → đảo chiều -->
+<th th:fragment="sortable(field, label)">
+    <a th:href="@{/students(keyword=${keyword}, size=${studentPage.size}, sort=${field + (sortField == field and sortDir == 'asc' ? ',desc' : ',asc')})}"
+       class="text-white text-decoration-none">
+        <span th:text="${label}">Cột</span>
+        <i th:if="${sortField == field}" class="bi ms-1"
+           th:classappend="${sortDir == 'asc'} ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
+    </a>
+</th>
 </body>
 </html>

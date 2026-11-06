@@ -1,6 +1,9 @@
 package com.hsf302.chapter6.service.impl;
 
+import com.hsf302.chapter6.dto.StudentForm;
+import com.hsf302.chapter6.entity.Major;
 import com.hsf302.chapter6.entity.Student;
+import com.hsf302.chapter6.repository.MajorRepository;
 import com.hsf302.chapter6.repository.StudentRepository;
 import com.hsf302.chapter6.service.StudentService;
 import org.springframework.data.domain.Page;
@@ -17,14 +20,20 @@ import java.util.Optional;
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
+    private final MajorRepository majorRepository;
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
+    public StudentServiceImpl(StudentRepository studentRepository, MajorRepository majorRepository) {
         this.studentRepository = studentRepository;
+        this.majorRepository = majorRepository;
     }
 
     @Override
-    public List<Student> findAll() {
-        return studentRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+    public Page<Student> search(String keyword, Pageable pageable) {
+        if (keyword == null || keyword.isBlank()) {
+            return studentRepository.findAll(pageable);
+        }
+        String key = keyword.trim();
+        return studentRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(key, key, pageable);
     }
 
     @Override
@@ -33,24 +42,34 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    @Transactional                      // ghi dữ liệu → bỏ readOnly
-    public Student create(Student student) {
-        student.setId(null);            // luôn INSERT, không bao giờ ghi đè bản ghi cũ
+    public Optional<StudentForm> findFormById(Long id) {
+        return studentRepository.findById(id).map(s -> {
+            StudentForm form = new StudentForm();
+            form.setId(s.getId());
+            form.setName(s.getName());
+            form.setEmail(s.getEmail());
+            form.setAge(s.getAge());
+            form.setGpa(s.getGpa());
+            form.setMajorId(s.getMajor().getId());
+            return form;
+        });
+    }
+
+    @Override
+    @Transactional
+    public Student create(StudentForm form) {
+        Student student = new Student();      // id = null → luôn INSERT
+        copy(form, student);
         return studentRepository.save(student);
     }
 
     @Override
     @Transactional
-    public boolean update(Long id, Student data) {
+    public boolean update(Long id, StudentForm form) {
         return studentRepository.findById(id)
                 .map(existing -> {
-                    existing.setName(data.getName());
-                    existing.setEmail(data.getEmail());
-                    existing.setAge(data.getAge());
-                    existing.setMajor(data.getMajor());
-                    existing.setGpa(data.getGpa());
-                    // Không cần gọi save(): entity đang "managed",
-                    // Hibernate tự sinh UPDATE khi transaction commit (dirty checking)
+                    copy(form, existing);
+                    // entity đang "managed" → Hibernate tự UPDATE khi commit (dirty checking)
                     return true;
                 })
                 .orElse(false);
@@ -75,22 +94,18 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<String> getMajors() {
-        return List.of("CNTT", "KTPM", "HTTT", "ATTT", "MMT");
+    public List<Major> getMajors() {
+        return majorRepository.findAll(Sort.by("code"));
     }
 
-    @Override
-    public List<Student> search(String keyword) {
-        if (keyword == null || keyword.isBlank()) {
-            return findAll();
-        }
-        String trimmed = keyword.trim();
-        return studentRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
-                trimmed, trimmed, Sort.by(Sort.Direction.ASC, "id"));
-    }
-
-    @Override
-    public Page<Student> findAllPaged(Pageable pageable) {
-        return studentRepository.findAll(pageable);
+    // DTO → Entity (chỗ duy nhất làm việc này)
+    private void copy(StudentForm form, Student student) {
+        Major major = majorRepository.findById(form.getMajorId())
+                .orElseThrow(() -> new IllegalArgumentException("Chuyên ngành không tồn tại: " + form.getMajorId()));
+        student.setName(form.getName().trim());
+        student.setEmail(form.getEmail().trim());
+        student.setAge(form.getAge());
+        student.setGpa(form.getGpa());
+        student.setMajor(major);
     }
 }

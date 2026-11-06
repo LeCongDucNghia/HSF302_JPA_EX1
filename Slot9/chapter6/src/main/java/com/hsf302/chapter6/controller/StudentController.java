@@ -14,32 +14,53 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/students")
 public class StudentController {
 
     private static final String FORM_VIEW = "students/form";
+    private static final int MAX_PAGE_SIZE = 50;
+
+    // Chỉ cho sắp xếp theo các cột này — không tin tham số ?sort= của người dùng
+    private static final Set<String> SORTABLE = Set.of("id", "name", "email", "age", "gpa", "major.name");
 
     private final StudentService studentService;
 
-    // Constructor injection (recommended) — 1 constructor nên không cần @Autowired
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
 
-    // Chạy trước MỌI handler trong controller → view nào cũng có ${majors} \*/
-    @ModelAttribute("majors")
-    public List<String> majors() {
-        return studentService.getMajors();
-    }
-
-    // ==================== READ ALL ====================
+    // ==================== READ ALL: tìm kiếm + phân trang + sắp xếp ====================
+    // GET /students?keyword=an&page=0&size=5&sort=gpa,desc
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("students", studentService.findAll());
+    public String list(@RequestParam(defaultValue = "") String keyword,
+                       @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "5") int size,
+                       @RequestParam(defaultValue = "id,asc") String sort,
+                       Model model) {
+
+        String[] parts = sort.split(",");
+        String sortField = SORTABLE.contains(parts[0]) ? parts[0] : "id";
+        Sort.Direction dir = parts.length > 1 && "desc".equalsIgnoreCase(parts[1])
+                ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        // Thêm id làm khoá phụ để thứ tự ổn định khi nhiều dòng trùng giá trị cột sắp xếp
+        Sort order = Sort.by(dir, sortField);
+        if (!sortField.equals("id")) {
+            order = order.and(Sort.by(Sort.Direction.ASC, "id"));
+        }
+
+        Page<Student> studentPage = studentService.search(keyword,
+                PageRequest.of(Math.max(page, 0), Math.min(Math.max(size, 1), MAX_PAGE_SIZE), order));
+
+        model.addAttribute("studentPage", studentPage);
+        model.addAttribute("students", studentPage.getContent());
+        model.addAttribute("keyword", keyword.trim());
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", dir.isAscending() ? "asc" : "desc");
         return "students/list";
     }
 
@@ -62,42 +83,39 @@ public class StudentController {
 
     @GetMapping("/create")
     public String showCreateForm(Model model) {
-        model.addAttribute("student", new Student());
+        model.addAttribute("studentForm", new StudentForm());
         return formView(model, false);
     }
 
     @PostMapping("/create")
-    public String create(@Valid @ModelAttribute("student") Student student,
+    public String create(@Valid @ModelAttribute("studentForm") StudentForm form,
                          BindingResult bindingResult,
                          Model model,
                          RedirectAttributes ra) {
-        // 1. Kiểm tra nghiệp vụ: email trùng (chỉ khi email đã hợp lệ về định dạng)
         if (!bindingResult.hasFieldErrors("email")
-                && studentService.isEmailTaken(student.getEmail(), null)) {
+                && studentService.isEmailTaken(form.getEmail(), null)) {
             bindingResult.rejectValue("email", "duplicate", "Email đã tồn tại");
         }
-        // 2. Có lỗi → quay lại form (KHÔNG redirect để giữ dữ liệu + lỗi)
         if (bindingResult.hasErrors()) {
-            return formView(model, false);
+            return formView(model, false);          // không redirect để giữ dữ liệu + lỗi
         }
-        // 3. Lưu DB — vẫn bắt lỗi UNIQUE phòng trường hợp 2 người submit cùng lúc
         try {
-            studentService.create(student);
-        } catch (DataIntegrityViolationException e) {
+            studentService.create(form);
+        } catch (DataIntegrityViolationException e) {   // 2 người submit cùng lúc
             bindingResult.rejectValue("email", "duplicate", "Email đã tồn tại");
             return formView(model, false);
         }
         ra.addFlashAttribute("successMsg", "Thêm sinh viên thành công!");
-        return "redirect:/students";                      // PRG pattern
+        return "redirect:/students";                    // PRG pattern
     }
 
     // ==================== UPDATE ====================
 
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable("id") Long id, Model model, RedirectAttributes ra) {
-        return studentService.findById(id)
-                .map(student -> {
-                    model.addAttribute("student", student);
+        return studentService.findFormById(id)
+                .map(form -> {
+                    model.addAttribute("studentForm", form);
                     return formView(model, true);
                 })
                 .orElseGet(() -> {
@@ -108,21 +126,21 @@ public class StudentController {
 
     @PostMapping("/{id}/edit")
     public String update(@PathVariable("id") Long id,
-                         @Valid @ModelAttribute("student") Student student,
+                         @Valid @ModelAttribute("studentForm") StudentForm form,
                          BindingResult bindingResult,
                          Model model,
                          RedirectAttributes ra) {
-        student.setId(id);   // form không gửi id → gắn từ URL để khi trả lỗi, form action vẫn đúng
+        form.setId(id);   // form không gửi id → gắn từ URL để khi trả lỗi, form action vẫn đúng
 
         if (!bindingResult.hasFieldErrors("email")
-                && studentService.isEmailTaken(student.getEmail(), id)) {
+                && studentService.isEmailTaken(form.getEmail(), id)) {
             bindingResult.rejectValue("email", "duplicate", "Email đã được sinh viên khác sử dụng");
         }
         if (bindingResult.hasErrors()) {
             return formView(model, true);
         }
         try {
-            if (studentService.update(id, student)) {
+            if (studentService.update(id, form)) {
                 ra.addFlashAttribute("successMsg", "Cập nhật thành công!");
             } else {
                 ra.addFlashAttribute("errorMsg", "Không tìm thấy sinh viên ID: " + id);
@@ -148,70 +166,11 @@ public class StudentController {
 
     // ==================== Helper ====================
 
+    // Chỉ form mới cần danh sách chuyên ngành → nạp ở đây thay vì @ModelAttribute chạy cho mọi request
     private String formView(Model model, boolean isEdit) {
+        model.addAttribute("majors", studentService.getMajors());
         model.addAttribute("isEdit", isEdit);
         model.addAttribute("pageTitle", isEdit ? "Cập nhật sinh viên" : "Thêm sinh viên mới");
         return FORM_VIEW;
-    }
-
-    @GetMapping
-    public String list(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
-        List<Student> students = studentService.search(keyword);
-        model.addAttribute("students", students);
-        model.addAttribute("keyword", keyword); // Giữ lại keyword trên ô input
-        return "students/list";
-    }
-
-    @GetMapping
-    public String list(@RequestParam(value = "page", defaultValue = "0") int page,
-                       @RequestParam(value = "size", defaultValue = "5") int size,
-                       Model model) {
-        Page<Student> studentPage = studentService.findAllPaged(PageRequest.of(page, size));
-        model.addAttribute("studentPage", studentPage);
-        model.addAttribute("students", studentPage.getContent());
-        return "students/list";
-    }
-
-    @GetMapping
-    public String list(@RequestParam(value = "sortField", defaultValue = "id") String sortField,
-                       @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
-                       Model model) {
-
-        Sort sort = sortDir.equalsIgnoreCase("asc") ?
-                Sort.by(sortField).ascending() : Sort.by(sortField).descending();
-
-        List<Student> students = studentRepository.findAll(sort);
-
-        model.addAttribute("students", students);
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
-
-        return "students/list";
-    }
-
-    @GetMapping("/create")
-    public String showCreateForm(Model model) {
-        model.addAttribute("student", new StudentForm());
-        return formView(model, false);
-    }
-
-    @PostMapping("/create")
-    public String create(@Valid @ModelAttribute("student") StudentForm studentForm,
-                         BindingResult bindingResult, Model model, RedirectAttributes ra) {
-        if (!bindingResult.hasFieldErrors("email") && studentService.isEmailTaken(studentForm.getEmail(), null)) {
-            bindingResult.rejectValue("email", "duplicate", "Email đã tồn tại");
-        }
-        if (bindingResult.hasErrors()) {
-            return formView(model, false);
-        }
-
-        // Map DTO sang Entity
-        Student student = new Student(studentForm.getName(), studentForm.getEmail(),
-                studentForm.getAge(), studentForm.getMajor(), studentForm.getGpa());
-        studentService.create(student);
-
-        ra.addFlashAttribute("successMsg", "Thêm sinh viên thành công!");
-        return "redirect:/students";
     }
 }

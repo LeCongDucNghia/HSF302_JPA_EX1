@@ -7,9 +7,6 @@ module fu.de200635.ch08javafx {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens fu.de200635.ch08javafx to javafx.fxml;
-    exports fu.de200635.ch08javafx;
-
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;      // T5
